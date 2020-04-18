@@ -1,12 +1,16 @@
 package com.rew.portal.model.admin.menu;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -30,5 +34,9 @@ public class Menu {
 	
 	@Column(name="parent", nullable=true)
 	private Integer parent;
+	
+	@Transient
+	@Setter
+	private List<Menu> children;
 	
 }
