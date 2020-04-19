@@ -35,6 +35,9 @@ public class Menu {
 	@Column(name="parent", nullable=true)
 	private Integer parent;
 	
+	@Column(name="menuOrder", nullable=true)
+	private Integer menuOrder;
+	
 	@Transient
 	@Setter
 	private List<Menu> children;

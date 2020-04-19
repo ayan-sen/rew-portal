@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -19,7 +21,8 @@ public class MenuService {
 	private MenuRepository menuRepository;
 	
 	public List<Menu> getMenu() {
-		List<Menu> menu = menuRepository.findAll();
+		Sort sort = Sort.by(Order.by("menuOrder"));
+		List<Menu> menu = menuRepository.findAll(sort);
 		
 		Map<Integer, List<Menu>> menuMap = menu.stream()
 				.filter(m -> m.getParent() != null)
