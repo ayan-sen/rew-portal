@@ -10,14 +10,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.rew.portal.model.admin.menu.Menu;
-import com.rew.portal.service.admin.menu.MenuService;
+import com.rew.portal.model.admin.rawMaterial.RawMaterial;
+import com.rew.portal.repository.admin.rawMaterial.RawMaterialRepository;
 
 @SpringBootApplication
 @EnableJpaRepositories
 public class RewPortalApplication implements CommandLineRunner {
 
 	@Resource
-	private MenuService menuService;
+	private RawMaterialRepository rawMaterialRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(RewPortalApplication.class, args);
@@ -26,7 +27,7 @@ public class RewPortalApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		List<Menu> menuList = menuService.getMenu();
+		List<RawMaterial> menuList = rawMaterialRepository.findByIsActive(true);
 		System.out.println(menuList);
 	}
 
