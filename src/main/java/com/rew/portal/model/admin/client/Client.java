@@ -1,41 +1,40 @@
 package com.rew.portal.model.admin.client;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import com.rew.portal.model.common.PkGenerationSignature;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
 @Entity(name="client_h")
-public class Client implements PkGenerationSignature {
+public class Client implements PkGenerationSignature, Serializable {
+
+	private static final long serialVersionUID = -3599351613656484513L;
 
 	@Id
-	@GenericGenerator(name="id-generator", 
-						parameters={@Parameter(name = "table", value = "client_h"),
-									@Parameter(name = "id", value = "clientId"),
-									@Parameter(name = "prefix", value = "P/")}, 
-						strategy = "com.rew.portal.repository.common.SequenceGenerator")
+	@GenericGenerator(name="id-generator", strategy = "com.rew.portal.repository.common.SequenceGenerator")
 	@GeneratedValue(generator="id-generator")
-	@Column(name="clientId")
 	private String clientId;
 	
 	@Column(name="clientName")
@@ -59,8 +58,8 @@ public class Client implements PkGenerationSignature {
 	@Column(name="isActive")
 	private boolean isActive;
 	
-	@OneToMany(mappedBy="client",cascade=CascadeType.ALL)
-    private List<ClientDetails> details;
+	@OneToMany(mappedBy="client", cascade=CascadeType.PERSIST, fetch=FetchType.LAZY)
+    private List<ClientDetails> details = new ArrayList<>();
 
 	@Override
 	public String getPrefix() {
@@ -76,7 +75,4 @@ public class Client implements PkGenerationSignature {
 	public String getidColName() {
 		return "clientId";
 	}
-	
-	
-	
 }
