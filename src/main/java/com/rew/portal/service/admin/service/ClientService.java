@@ -1,6 +1,7 @@
 package com.rew.portal.service.admin.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -17,11 +18,18 @@ public class ClientService {
 	private ClientRepository clientRepository;
 	
 	public Client save(Client client) {
-		
 		List<ClientDetails> details = client.getDetails();
 		details.forEach(d -> d.setClient(client));
-		
-		
 		return clientRepository.save(client);
 	}
+	
+	public Client findById(String clientId) {
+		Optional<Client> opt = clientRepository.findById(clientId);
+		return opt.isPresent() ? opt.get() : null;
+	}
+	
+	public List<Client> findAll() {
+		return clientRepository.findAll();
+	}
+	
 }

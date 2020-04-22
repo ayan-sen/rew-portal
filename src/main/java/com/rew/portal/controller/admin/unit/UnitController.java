@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rew.portal.model.admin.unit.Unit;
 import com.rew.portal.service.admin.unit.UnitService;
 
+@Slf4j
 @RestController
 public class UnitController {
 
@@ -34,8 +37,10 @@ public class UnitController {
 			response.put("message", "Unit Created Successfully");
 			return new ResponseEntity<Map<String,String>>(response, HttpStatus.CREATED);
 		} catch (Exception e) {
+			log.error("Exception in unit creation", e);
 			response.put("status", "failure");
 			response.put("message", e.getMessage());
+			response.put("error", e.getMessage());
 			return new ResponseEntity<Map<String,String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

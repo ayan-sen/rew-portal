@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.service.admin.rawMaterial.RawMaterialService;
-
+@Slf4j
 @RestController
 public class RawMaterialController {
 
@@ -35,6 +37,7 @@ public class RawMaterialController {
 			return new ResponseEntity<Map<String, String>>(response,
 					HttpStatus.CREATED);
 		} catch (Exception e) {
+			log.error("Exception in raw material creation", e);
 			response.put("status", "failure");
 			response.put("message",
 					"Error occurred during raw material creation");
