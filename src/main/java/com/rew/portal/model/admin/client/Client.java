@@ -20,6 +20,8 @@ import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.common.PkGenerationSignature;
 
 @Getter
@@ -47,7 +49,7 @@ public class Client implements PkGenerationSignature, Serializable {
 	private String gstinNo;
 	
 	@Column(name="contactNoPrimary")
-	private Integer primanyContactNo;
+	private Long primanyContactNo;
 	
 	@Column(name="emailPrimary")
 	private String primaryEmailId;
@@ -55,6 +57,7 @@ public class Client implements PkGenerationSignature, Serializable {
 	@Column(name="comments")
 	private String comments;
 	
+	@JsonProperty("isActive")
 	@Column(name="isActive")
 	private boolean isActive;
 	
@@ -63,7 +66,7 @@ public class Client implements PkGenerationSignature, Serializable {
 
 	@Override
 	public String getPrefix() {
-		return "P/";
+		return "P";
 	}
 
 	@Override

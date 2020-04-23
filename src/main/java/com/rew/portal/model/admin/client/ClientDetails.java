@@ -36,10 +36,7 @@ public class ClientDetails implements Serializable{
 	private String address;
 	
 	@Column(name="pincode")
-	private Integer pincode;
-	
-	@Column(name="state")
-	private String state;
+	private Long pincode;
 	
 	@Column(name="identifier")
 	private String identifier;
@@ -48,7 +45,7 @@ public class ClientDetails implements Serializable{
 	private String emailId;
 	
 	@Column(name="contactNo")
-	private Integer contactNo; 
+	private Long contactNo; 
 	
 	@Column(name="comments")
 	private String comments;

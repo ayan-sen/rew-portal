@@ -54,7 +54,7 @@ public class ClientController {
 				clientService.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping("/admin/clients/{code}")
+	@GetMapping("/admin/clients/{clientId}")
 	public ResponseEntity<Client> findById(@PathVariable String clientId) {
 		Client client = clientService.findById(clientId);
 		return Objects.isNull(client) ? 
