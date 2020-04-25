@@ -22,6 +22,7 @@ import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.common.PkGenerationSignature;
 @EqualsAndHashCode
@@ -66,16 +67,19 @@ public class Client implements PkGenerationSignature, Serializable {
 	@OneToMany(mappedBy="client", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<ClientDetails> details = new ArrayList<>();
 
+	@JsonIgnore
 	@Override
 	public String getPrefix() {
 		return "P";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTableName() {
 		return "client_h";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getidColName() {
 		return "clientId";
