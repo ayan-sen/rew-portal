@@ -65,5 +65,10 @@ public class ClientDetails implements Serializable{
 	@JoinColumn(name = "clientId", referencedColumnName="clientId", nullable=false)
 	private Client client;
 	
-	
+	public String getClientId() {
+		if(this.client != null) {
+			return this.client.getClientId();
+		}
+		return null;
+	}
 }
