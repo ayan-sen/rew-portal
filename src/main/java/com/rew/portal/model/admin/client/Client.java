@@ -18,6 +18,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -60,6 +61,7 @@ public class Client implements PkGenerationSignature, Serializable {
 	@Column(name="comments")
 	private String comments;
 	
+	@Setter
 	@JsonProperty("isActive")
 	@Column(name="isActive")
 	private boolean isActive;
@@ -83,5 +85,9 @@ public class Client implements PkGenerationSignature, Serializable {
 	@Override
 	public String getidColName() {
 		return "clientId";
+	}
+	
+	public void removeDetail(int detailId) {
+		details.removeIf(d -> d.getDetailId() == detailId);
 	}
 }

@@ -1,7 +1,10 @@
 package com.rew.portal.service.admin.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import javassist.NotFoundException;
 
 import javax.annotation.Resource;
 
@@ -29,7 +32,26 @@ public class ClientService {
 	}
 	
 	public List<Client> findAll() {
-		return clientRepository.findAll();
+		return clientRepository.findByIsActive(true);
 	}
 	
+	public void deleteClient(String clientId) throws NotFoundException {
+		Client client = this.findById(clientId);
+		if(Objects.nonNull(client)) {
+			client.setActive(false);
+			clientRepository.save(client);
+		} else {
+			throw new NotFoundException("Client not found with client id" + clientId);
+		}
+	}
+	
+	public void deleteClientDetail(String clientId, int detailId) throws NotFoundException {
+		Client client = this.findById(clientId);
+		if(Objects.nonNull(client)) {
+			client.removeDetail(detailId);
+			clientRepository.save(client);
+		} else {
+			throw new NotFoundException("Client not found with client id" + clientId);
+		}
+	}
 }
