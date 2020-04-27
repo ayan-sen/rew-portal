@@ -1,4 +1,4 @@
-package com.rew.portal.service.admin.service;
+package com.rew.portal.service.admin.client;
 
 import java.util.List;
 import java.util.Objects;

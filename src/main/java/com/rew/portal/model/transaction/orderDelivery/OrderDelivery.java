@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -34,6 +35,7 @@ import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
+import com.rew.portal.model.transaction.inventory.InventoryRecord;
 
 @EqualsAndHashCode
 @Getter
@@ -93,7 +95,6 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Column(name="totalAmount", length=20, nullable=false)
 	private Double totalAmount;
 	
-
 	@Column(name="notes", length=100)
 	private String notes;
 	
@@ -127,6 +128,10 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="siteId", referencedColumnName="siteId", insertable=false,updatable=false)
 	private WorkUnitDetails workUnitDetail;
+	
+	@Setter
+	@OneToOne(mappedBy="invOrderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
+    private InventoryRecord record = new InventoryRecord();
 	
 	@JsonIgnore
 	@Override

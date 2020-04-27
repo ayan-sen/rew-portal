@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -33,6 +34,7 @@ import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
+import com.rew.portal.model.transaction.inventory.InventoryRecord;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
 
 @EqualsAndHashCode
