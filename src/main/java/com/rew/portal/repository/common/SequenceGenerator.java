@@ -26,7 +26,7 @@ public class SequenceGenerator implements IdentifierGenerator {
         try {
             Statement statement=connection.createStatement();
 
-            String sql = StringUtils.join("select count(",sig.getidColName(),") as Id from ",sig.getTableName());
+            String sql = StringUtils.join("select count(",sig.getIdColName(),") as Id from ",sig.getTableName());
             
             ResultSet rs=statement.executeQuery(sql);
 

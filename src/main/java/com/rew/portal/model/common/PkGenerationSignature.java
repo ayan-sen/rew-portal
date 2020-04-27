@@ -12,5 +12,5 @@ public interface PkGenerationSignature {
 	String getTableName();
 	
 	@Transient
-	String getidColName();
+	String getIdColName();
 }

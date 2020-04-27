@@ -83,7 +83,7 @@ public class Client implements PkGenerationSignature, Serializable {
 
 	@JsonIgnore
 	@Override
-	public String getidColName() {
+	public String getIdColName() {
 		return "clientId";
 	}
 	
