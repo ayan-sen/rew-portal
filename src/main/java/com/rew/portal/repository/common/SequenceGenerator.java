@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
@@ -33,7 +34,12 @@ public class SequenceGenerator implements IdentifierGenerator {
             if(rs.next())
             {
                 int id=rs.getInt(1)+101;
-                String generatedId = sig.getPrefix() + new Integer(id).toString();
+                String generatedId = "";
+                if(sig.enableSuffix()) {
+                	generatedId = StringUtils.join(sig.getPrefix(),new Integer(id).toString(),"/",this.getCurrentFinancialYear());
+                } else {
+                	generatedId = StringUtils.join(sig.getPrefix(),new Integer(id).toString());
+                }
                 System.out.println("Generated Id: " + generatedId);
                 return generatedId;
             }
@@ -43,4 +49,23 @@ public class SequenceGenerator implements IdentifierGenerator {
         }
         return null;
     }
+	
+	private String getCurrentFinancialYear() {
+		
+		LocalDate date = LocalDate.now();
+		if(date.getYear() == 2020) {
+			if(date.getMonthValue() > 7) {
+				return StringUtils.join(date.getYear(),"-",(date.getYear() + 1) % 100);
+			} else {
+				return StringUtils.join((date.getYear() - 1),"-",(date.getYear()% 100));
+			}
+		} else {
+			if(date.getMonthValue() > 3) {
+				return StringUtils.join(date.getYear(),"-",(date.getYear() + 1)% 100);
+			} else {
+				return StringUtils.join((date.getYear() - 1),"-",(date.getYear()% 100));
+			}
+		}
+		
+	}
 }

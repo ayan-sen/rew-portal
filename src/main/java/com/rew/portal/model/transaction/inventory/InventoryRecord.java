@@ -51,8 +51,8 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 	@Column(name="referenceType", length=20, nullable=false)
 	private String referenceType;
 	
-	@Column(name="entryType", length=10, nullable=false)
-	private String entryType;
+	@Column(name="inOutFlag", length=10, nullable=false)
+	private String inOutFlag;
 	
 	@Column(name="rawMaterialCode", length=20, nullable=false)
 	private String rawMaterialCode;
@@ -66,11 +66,11 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 	@Column(name="siteId", length=10, nullable=false)
 	private String siteId;
 	
-	@JsonIgnore
+	/*@JsonIgnore
 	@Setter
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "referenceId", referencedColumnName="deliveryId", nullable=false)
-	private OrderDelivery invOrderDelivery;
+	private OrderDelivery invOrderDelivery;*/
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
@@ -84,7 +84,7 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 
 	@Override
 	public String getPrefix() {
-		return "INV/";
+		return "REW/I/";
 	}
 
 	@Override
@@ -97,5 +97,8 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 		return "inventoryId";
 	}
 	
-	
+	@Override
+	public boolean enableSuffix() {
+		return true;
+	}
 }

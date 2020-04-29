@@ -21,14 +21,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
-import com.rew.portal.model.common.PkGenerationSignature;
 
 @EqualsAndHashCode
 @Getter
@@ -45,7 +43,7 @@ public class OrderDeliveryDetails implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.TABLE)
 	@Column(name="deliveryDetailId", length=20)
-	private String detailId;
+	private Integer detailId;
 	
 	@Column(name="rmId", length=20, nullable=false)
 	private String rmId;

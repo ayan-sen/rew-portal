@@ -31,11 +31,11 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
-import com.rew.portal.model.transaction.inventory.InventoryRecord;
 
 @EqualsAndHashCode
 @Getter
@@ -83,14 +83,14 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Column(name="amount", length=20, nullable=false)
 	private Double amount;
 	
+	@Column(name="freightCharges", length=20)
+	private Double freightCharges;
+	
 	@Column(name="cgstAmount", length=20, nullable=false)
 	private Double cgstAmount;
 	
 	@Column(name="sgstAmount", length=20, nullable=false)
 	private Double sgstAmount;
-	
-	@Column(name="roundOffAmount", length=5, nullable=false)
-	private Double roundOffAmount;
 	
 	@Column(name="totalAmount", length=20, nullable=false)
 	private Double totalAmount;
@@ -100,6 +100,11 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	
 	@Column(name="siteId", length=20, nullable=false)
 	private String siteId;
+	
+	@Setter
+	@JsonProperty("isActive")
+	@Column(name="isActive", length=1, nullable=false)
+	private Boolean isActive = true;
 
 	@OneToMany(mappedBy="orderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<OrderDeliveryDetails> details = new ArrayList<>();
@@ -129,14 +134,14 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@JoinColumn(name="siteId", referencedColumnName="siteId", insertable=false,updatable=false)
 	private WorkUnitDetails workUnitDetail;
 	
-	@Setter
-	@OneToOne(mappedBy="invOrderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
-    private InventoryRecord record = new InventoryRecord();
+//	@Setter
+//	@OneToOne(mappedBy="invOrderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
+//    private InventoryRecord record = new InventoryRecord();
 	
 	@JsonIgnore
 	@Override
 	public String getPrefix() {
-		return "DH/";
+		return "REW/D/";
 	}
 
 	@JsonIgnore
@@ -149,5 +154,14 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Override
 	public String getIdColName() {
 		return "deliveryId";
+	}
+	
+	@Override
+	public boolean enableSuffix() {
+		return true;
+	}
+	
+	public void removeDetail(int detailId) {
+		details.removeIf(d -> d.getDetailId() == detailId);
 	}
 }

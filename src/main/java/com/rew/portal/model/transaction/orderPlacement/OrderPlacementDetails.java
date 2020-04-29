@@ -27,7 +27,6 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
-import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 
 @EqualsAndHashCode
 @Getter

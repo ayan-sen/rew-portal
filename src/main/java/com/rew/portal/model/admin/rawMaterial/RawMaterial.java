@@ -32,8 +32,8 @@ public class RawMaterial {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "description", nullable = true)
-	private String description;
+	@Column(name = "hsnSacCode", nullable = true)
+	private String hsnSacCode;
 
 	@Column(name = "unitId")
 	private String unitId;
@@ -56,17 +56,4 @@ public class RawMaterial {
 		return this.unitName;
 	}
 	
-	/*public String getUnitId() {
-		if (Objects.nonNull(this.unit)) {
-			return this.unit.getUnitId();
-		}
-		return null;
-	}*/
-
-	@Override
-	public String toString() {
-		return "RawMaterial [code=" + code + ", name=" + name
-				+ ", description=" + description + ", isActive=" + isActive
-				+ ", unitName=" + unitName + "]";
-	}
 }

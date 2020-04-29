@@ -13,4 +13,9 @@ public interface PkGenerationSignature {
 	
 	@Transient
 	String getIdColName();
+	
+	@Transient
+	default boolean enableSuffix() {
+		return false;
+	}
 }

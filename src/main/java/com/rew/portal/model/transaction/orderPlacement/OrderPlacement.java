@@ -1,8 +1,8 @@
 package com.rew.portal.model.transaction.orderPlacement;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -30,12 +30,11 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
-import com.rew.portal.model.transaction.inventory.InventoryRecord;
-import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
 
 @EqualsAndHashCode
 @Getter
@@ -61,13 +60,13 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	@Column(name="supplierDetailsId")
 	private Integer supplierDetailsId;
 	
-	@Temporal(TemporalType.DATE)
+	//@Temporal(TemporalType.DATE)
 	@Column(name="expectedDeliveryDate", nullable=false)
-	private Date expectedDeliveryDate;
+	private LocalDate expectedDeliveryDate;
 	
-	@Temporal(TemporalType.DATE)
+	//@Temporal(TemporalType.DATE)
 	@Column(name="actualDeliveryDate")
-	private Date actualDeliveryDate;
+	private LocalDate actualDeliveryDate;
 	
 	@Column(name="status", nullable=false)
 	private String status;
@@ -77,6 +76,11 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	
 	@Column(name="siteId", length=20, nullable=false)
 	private String siteId;
+	
+	@Setter
+	@JsonProperty("isActive")
+	@Column(name="isActive", length=1, nullable=false)
+	private Boolean isActive = true;
 	
 	@OneToMany(mappedBy="orderPlacement", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<OrderPlacementDetails> details = new ArrayList<>();
@@ -109,5 +113,14 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	@Override
 	public String getIdColName() {
 		return "orderId";
+	}
+	
+	@Override
+	public boolean enableSuffix() {
+		return true;
+	}
+	
+	public void removeDetail(int detailId) {
+		details.removeIf(d -> d.getOrderDetailsId() == detailId);
 	}
 }
