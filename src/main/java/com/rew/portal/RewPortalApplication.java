@@ -13,14 +13,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
+import com.rew.portal.model.transaction.project.Project;
+import com.rew.portal.model.transaction.project.ProjectDetails;
 import com.rew.portal.service.transaction.orderPlacement.OrderPlacementService;
+import com.rew.portal.service.transaction.project.ProjectService;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages="com.rew.portal.repository")
 public class RewPortalApplication implements CommandLineRunner {
 
 	@Resource
-	private OrderPlacementService orderPlacementService;
+	private ProjectService projectService;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(RewPortalApplication.class, args);
@@ -30,27 +33,39 @@ public class RewPortalApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		
-		
-		OrderPlacementDetails dtl1 = OrderPlacementDetails.builder()
-										.quantity(100.0)
-										.rmId("IRON")
-										.unitId("KG")
-										.build();
-		
-		List<OrderPlacementDetails> dtls = new ArrayList<>();
-		dtls.add(dtl1);
-		
-		OrderPlacement op = OrderPlacement.builder()
-				.expectedDeliveryDate(LocalDate.now())
-				.siteId("DUMDUM")
-				.status("DRAFT")
-				.isActive(true)
-				.details(dtls)
+		ProjectDetails dtl1 = ProjectDetails.builder()
+				.quantity(100.0)
+				.rmId("IRON")
+				.unitId("KG")
+				.rate(5.0)
+				.quantity(100.0)
+				.amount(500.0)
 				.build();
 		
+		List<ProjectDetails> dtls = new ArrayList<>();
+		dtls.add(dtl1);
+				
+		Project project = Project.builder()
+								.amendmentNo(0)
+								.amendmentDate(LocalDate.now())
+								.description("BHEL Project")
+								.customerId("P101")
+								.consigneeId("P102")
+								.purchaseOrderNo("100")
+								.purchaseOrderDate(LocalDate.now())
+								.workOrderReference("WR01")
+								.expectedDeliveryDate(LocalDate.now())
+								.status("DRAFT")
+								.amount(500.0)
+								.sgstAmount(22.5)
+								.cgstAmount(22.5)
+								.totalAmount(545.0)
+								.details(dtls)
+								.build();
+								
 		
-		orderPlacementService.save(op);
+		
+		projectService.save(project);
 	}
 
 }
