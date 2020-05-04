@@ -22,7 +22,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rew.portal.model.common.PkGenerationSignature;
 
 @EqualsAndHashCode
 @Getter

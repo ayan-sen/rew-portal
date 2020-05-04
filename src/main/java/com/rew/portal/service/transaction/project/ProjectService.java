@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 import com.rew.portal.model.transaction.project.Project;
 import com.rew.portal.model.transaction.project.ProjectDetails;
 import com.rew.portal.repository.transaction.project.ProjectRepository;
@@ -27,5 +26,10 @@ public class ProjectService {
 	public Project findById(String projectId) {
 		Optional<Project> opt = projectRepository.findById(projectId);
 		return opt.isPresent() ? opt.get() : null;
+	}
+	
+	public List<Project> findAll() {
+		List<Project> projects = projectRepository.findAll();
+		return projects;
 	}
 }

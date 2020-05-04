@@ -15,8 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,6 +79,9 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	@JsonProperty("isActive")
 	@Column(name="isActive", length=1, nullable=false)
 	private Boolean isActive = true;
+	
+	@Column(name="projectId", length=20, nullable=false)
+	private String projectId;
 	
 	@OneToMany(mappedBy="orderPlacement", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<OrderPlacementDetails> details = new ArrayList<>();
