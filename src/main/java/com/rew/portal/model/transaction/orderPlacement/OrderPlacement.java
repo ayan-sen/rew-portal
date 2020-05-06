@@ -2,6 +2,7 @@ package com.rew.portal.model.transaction.orderPlacement;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,15 +26,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
+import com.rew.portal.model.transaction.project.Project;
 
 @EqualsAndHashCode
 @Getter
@@ -58,13 +63,19 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	@Column(name="supplierDetailsId")
 	private Integer supplierDetailsId;
 	
-	//@Temporal(TemporalType.DATE)
+	@JsonIgnore
 	@Column(name="expectedDeliveryDate", nullable=false)
 	private LocalDate expectedDeliveryDate;
 	
-	//@Temporal(TemporalType.DATE)
+	@Transient
+	private String expectedDeliveryDateString;
+	
+	@JsonIgnore
 	@Column(name="actualDeliveryDate")
 	private LocalDate actualDeliveryDate;
+	
+	@Transient
+	private String actualDeliveryDateString;
 	
 	@Column(name="status", nullable=false)
 	private String status;
@@ -86,36 +97,48 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	@OneToMany(mappedBy="orderPlacement", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<OrderPlacementDetails> details = new ArrayList<>();
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="supplierId", referencedColumnName="clientId", insertable=false,updatable=false)
 	private Client supplier;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="supplierDetailsId", referencedColumnName="detailId", insertable=false,updatable=false)
-	private ClientDetails detailId;
+	private ClientDetails clientDetails;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="siteId", referencedColumnName="siteId", insertable=false,updatable=false)
 	private WorkUnitDetails workUnitDetail;
+	
+	@JsonIgnore
+	@Setter
+	@Transient
+	private Project project;
 
+	@JsonIgnore
 	@Override
 	public String getPrefix() {
 		return "REW/O/";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTableName() {
 		return "orderplacement_h";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getIdColName() {
 		return "orderId";
 	}
 	
+	@JsonIgnore
 	@Override
 	public boolean enableSuffix() {
 		return true;
@@ -123,5 +146,47 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	
 	public void removeDetail(int detailId) {
 		details.removeIf(d -> d.getOrderDetailsId() == detailId);
+	}
+	
+	public String getDescription() {
+		if(this.project != null) {
+			return this.project.getDescription();
+		}
+		return null;
+	}
+	
+	public String getIdentifier() {
+		if(this.supplier != null) {
+			return this.supplier.getDetails().stream().findFirst().get().getIdentifier();
+		}
+		return null;
+	}
+	
+	public String getExpectedDeliveryDateString() {
+		if(this.expectedDeliveryDate != null) {
+			return this.expectedDeliveryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+	}
+	
+	public String getActualDeliveryDateString() {
+		if(this.actualDeliveryDate != null) {
+			return this.actualDeliveryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+	}
+	
+	public void setExpectedDeliveryDateString(String expectedDeliveryDateString) {
+		this.expectedDeliveryDateString = expectedDeliveryDateString;
+		if(StringUtils.isNotEmpty(expectedDeliveryDateString)) {
+			this.expectedDeliveryDate = LocalDate.parse(this.expectedDeliveryDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	public void setActualDeliveryDateString(String actualDeliveryDateString) {
+		this.actualDeliveryDateString = actualDeliveryDateString;
+		if(StringUtils.isNotEmpty(actualDeliveryDateString)) {
+			this.actualDeliveryDate = LocalDate.parse(this.actualDeliveryDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
 	}
 }

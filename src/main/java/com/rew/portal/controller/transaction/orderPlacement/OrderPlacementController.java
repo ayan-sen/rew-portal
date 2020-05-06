@@ -13,9 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
@@ -55,16 +55,16 @@ public class OrderPlacementController {
 				orderPlacementService.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping("/transaction/orders/{orderId}")
-	public ResponseEntity<OrderPlacement> findById(@PathVariable String orderId) {
+	@GetMapping("/transaction/orders/find")
+	public ResponseEntity<OrderPlacement> findById(@RequestParam("id") String orderId) {
 		OrderPlacement orderPlacement = orderPlacementService.findById(orderId);
 		return Objects.isNull(orderPlacement) ? 
 				new ResponseEntity<OrderPlacement>(HttpStatus.NOT_FOUND) 
 				: new ResponseEntity<OrderPlacement>(orderPlacement, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/transaction/orders/{orderId}")
-	public ResponseEntity<Map<String, String>> delete(@PathVariable String orderId) {
+	@DeleteMapping("/transaction/orders/delete")
+	public ResponseEntity<Map<String, String>> delete(@RequestParam("id") String orderId) {
 		Map<String, String> response = new HashMap<>();
 		try {
 			orderPlacementService.delete(orderId);
@@ -80,9 +80,9 @@ public class OrderPlacementController {
 		}
 	}
 	
-	@DeleteMapping("/transaction/orders/{orderId}/detail/{detailId}")
-	public ResponseEntity<Map<String, String>> deleteDetail(@PathVariable String orderId, 
-			@PathVariable Integer detailId ) {
+	@DeleteMapping("/transaction/orders/detail")
+	public ResponseEntity<Map<String, String>> deleteDetail(@RequestParam("id") String orderId, 
+			@RequestParam("detailId") Integer detailId ) {
 		Map<String, String> response = new HashMap<>();
 		try {
 			orderPlacementService.deleteDetail(orderId, detailId);

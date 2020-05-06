@@ -12,13 +12,18 @@ import org.springframework.stereotype.Service;
 
 import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
+import com.rew.portal.model.transaction.project.Project;
 import com.rew.portal.repository.transaction.orderPlacement.OrderPlacementRepository;
+import com.rew.portal.repository.transaction.project.ProjectRepository;
 
 @Service
 public class OrderPlacementService {
 
 	@Resource
 	private OrderPlacementRepository orderPlacementRepository;
+	
+	@Resource
+	private ProjectRepository projectRepository;
 	
 	public OrderPlacement save(OrderPlacement orderPlacement) {
 		List<OrderPlacementDetails> details = orderPlacement.getDetails();
@@ -28,7 +33,12 @@ public class OrderPlacementService {
 	
 	public OrderPlacement findById(String clientId) {
 		Optional<OrderPlacement> opt = orderPlacementRepository.findById(clientId);
-		return opt.isPresent() ? opt.get() : null;
+		OrderPlacement op = opt.isPresent() ? opt.get() : null;
+		if(Objects.nonNull(op)) {
+			Project project = projectRepository.findLatest(op.getProjectId());
+			op.setProject(project);
+		}
+		return op;
 	}
 	
 	public List<OrderPlacement> findAll() {

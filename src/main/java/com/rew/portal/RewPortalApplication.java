@@ -24,6 +24,8 @@ public class RewPortalApplication implements CommandLineRunner {
 
 	@Resource
 	private ProjectService projectService;
+	@Resource
+	private OrderPlacementService orderPlacementService;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(RewPortalApplication.class, args);
@@ -46,7 +48,8 @@ public class RewPortalApplication implements CommandLineRunner {
 		dtls.add(dtl1);
 				
 		Project project = Project.builder()
-								.amendmentNo(0)
+								.projectId("REW/P/110/2019-20")
+								.amendmentNo(1)
 								.amendmentDate(LocalDate.now())
 								.description("BHEL Project")
 								.customerId("P101")
@@ -65,7 +68,8 @@ public class RewPortalApplication implements CommandLineRunner {
 								
 		
 		
-		projectService.save(project);
+		//OrderPlacement p = orderPlacementService.findById("REW/O/104/2019-20");
+		//System.out.println(p);
 	}
 
 }
