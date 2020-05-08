@@ -37,6 +37,9 @@ public class RawMaterial {
 
 	@Column(name = "unitId")
 	private String unitId;
+	
+	@Column(name = "type", length=1)
+	private String type;
 
 	@Column(name = "isActive")
 	private Boolean isActive;

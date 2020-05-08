@@ -61,7 +61,7 @@ public class OrderPlacementService {
 			orderPlacement.removeDetail(detailId);
 			orderPlacementRepository.save(orderPlacement);
 		} else {
-			throw new NotFoundException("Client not found with client id" + orderPlacementId);
+			throw new NotFoundException("Order detail not found with id " + orderPlacementId);
 		}
 	}
 }

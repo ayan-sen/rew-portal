@@ -11,7 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +26,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rew.portal.model.admin.rawMaterial.RawMaterial;
+import com.rew.portal.model.admin.unit.Unit;
 
 @EqualsAndHashCode
 @Getter
@@ -65,5 +71,15 @@ public class ProjectDetails implements Serializable{
 		}
 	)
 	private Project project;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="rmId", referencedColumnName="code", insertable=false,updatable=false)
+	private RawMaterial rawMaterial;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
+	private Unit unit;
 	
 }

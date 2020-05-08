@@ -48,9 +48,9 @@ public class RawMaterialController {
 	}
 
 	@GetMapping("/admin/raw-materials")
-	public ResponseEntity<List<RawMaterial>> findAll() {
+	public ResponseEntity<List<RawMaterial>> findAllRawMaterials() {
 		return new ResponseEntity<List<RawMaterial>>(
-				rawMaterialService.findAll(), HttpStatus.OK);
+				rawMaterialService.findAllRawMaterials(), HttpStatus.OK);
 	}
 
 	@GetMapping("/admin/raw-materials/{code}")
@@ -60,4 +60,17 @@ public class RawMaterialController {
 				new ResponseEntity<RawMaterial>(HttpStatus.NOT_FOUND) 
 				: new ResponseEntity<RawMaterial>(rawMaterial, HttpStatus.OK);
 	}
+	
+	@GetMapping("/admin/products")
+	public ResponseEntity<List<RawMaterial>> findAllProducts() {
+		return new ResponseEntity<List<RawMaterial>>(
+				rawMaterialService.findAllProducts(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/admin/materials")
+	public ResponseEntity<List<RawMaterial>> findAll() {
+		return new ResponseEntity<List<RawMaterial>>(
+				rawMaterialService.findAll(), HttpStatus.OK);
+	}
+	
 }

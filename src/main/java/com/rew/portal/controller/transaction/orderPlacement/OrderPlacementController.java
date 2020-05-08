@@ -80,7 +80,7 @@ public class OrderPlacementController {
 		}
 	}
 	
-	@DeleteMapping("/transaction/orders/detail")
+	@DeleteMapping("/transaction/orders/detail/delete")
 	public ResponseEntity<Map<String, String>> deleteDetail(@RequestParam("id") String orderId, 
 			@RequestParam("detailId") Integer detailId ) {
 		Map<String, String> response = new HashMap<>();

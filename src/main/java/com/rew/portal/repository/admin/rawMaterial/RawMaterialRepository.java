@@ -11,4 +11,6 @@ import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 public interface RawMaterialRepository extends JpaRepository<RawMaterial, String> {
 
 	public List<RawMaterial> findByIsActive(boolean isActive);
+	
+	public List<RawMaterial> findByIsActiveAndType(boolean isActive, String type);
 }

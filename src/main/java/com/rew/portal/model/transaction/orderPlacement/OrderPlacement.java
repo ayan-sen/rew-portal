@@ -107,7 +107,7 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="supplierDetailsId", referencedColumnName="detailId", insertable=false,updatable=false)
-	private ClientDetails clientDetails;
+	private ClientDetails supplierDetails;
 	
 	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -156,8 +156,8 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	}
 	
 	public String getIdentifier() {
-		if(this.supplier != null) {
-			return this.supplier.getDetails().stream().findFirst().get().getIdentifier();
+		if(this.supplierDetails != null) {
+			return this.supplierDetails.getIdentifier();
 		}
 		return null;
 	}
@@ -188,5 +188,12 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 		if(StringUtils.isNotEmpty(actualDeliveryDateString)) {
 			this.actualDeliveryDate = LocalDate.parse(this.actualDeliveryDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		}
+	}
+	
+	public String getSupplierName() {
+		if(this.supplier != null) {
+			return this.supplier.getClientName();
+		}
+		return null;
 	}
 }

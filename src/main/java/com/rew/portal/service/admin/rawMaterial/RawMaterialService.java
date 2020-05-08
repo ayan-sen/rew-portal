@@ -28,4 +28,12 @@ public class RawMaterialService {
 	public List<RawMaterial> findAll() {
 		return rawMaterialRepository.findAll();
 	}
+	
+	public List<RawMaterial> findAllRawMaterials() {
+		return rawMaterialRepository.findByIsActiveAndType(true, "R");
+	}
+	
+	public List<RawMaterial> findAllProducts() {
+		return rawMaterialRepository.findByIsActiveAndType(true, "P");
+	}
 }
