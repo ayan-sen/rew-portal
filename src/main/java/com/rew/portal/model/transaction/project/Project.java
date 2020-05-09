@@ -1,11 +1,13 @@
 package com.rew.portal.model.transaction.project;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,6 +30,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -63,6 +66,9 @@ public class Project implements PkGenerationSignature, Serializable {
 	@Column(name="amendmentDate", length=20)
 	private LocalDate amendmentDate;
 	
+	@Transient
+	private String amendmentDateString;
+	
 	@Column(name="description", length=100, nullable=false)
 	private String description;
 	
@@ -71,6 +77,13 @@ public class Project implements PkGenerationSignature, Serializable {
 	
 	@Column(name="consigneeId", length=20)
 	private String consigneeId;
+	
+	@JsonIgnore
+	@Column(name="projectStartDate")
+	private LocalDate projectStartDate;
+	
+	@Transient
+	private String projectStartDateString;
 	
 	@Column(name="purchaseOrderNo", length=50)
 	private String purchaseOrderNo;
@@ -99,7 +112,7 @@ public class Project implements PkGenerationSignature, Serializable {
 	@Transient
 	private String actualDeliveryDateString;
 	
-	@Column(name="status", length=10, nullable=false)
+	@Column(name="status", length=20, nullable=false)
 	private String status;
 	
 	@Column(name="notes", length=100)
@@ -122,7 +135,7 @@ public class Project implements PkGenerationSignature, Serializable {
 	
 	@Setter
 	@JsonProperty("isActive")
-	@Column(name="isActive", length=1, nullable=false)
+	@Column(name="isActive", nullable=false)
 	private Boolean isActive = true;
 	
 	@OneToMany(mappedBy="project", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
@@ -202,4 +215,63 @@ public class Project implements PkGenerationSignature, Serializable {
 	public void removeDetail(int detailId) {
 		details.removeIf(d -> d.getDetailId() == detailId);
 	}
+	
+	public void calculate() {
+		Double totalDetailAmount = this.details.stream().map(d -> d.getAmount()).collect(Collectors.summingDouble(d -> d ));
+		this.amount = new BigDecimal(totalDetailAmount).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		this.cgstAmount = new BigDecimal(((amount + this.otherCharges) * 9)/100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		this.sgstAmount = new BigDecimal(((amount + this.otherCharges) * 9)/100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		this.totalAmount = new BigDecimal(amount + cgstAmount + sgstAmount + this.otherCharges).setScale(2, RoundingMode.HALF_UP).doubleValue();
+	}
+	
+	public void setExpectedDeliveryDateString(String expectedDeliveryDateString) {
+		this.expectedDeliveryDateString = expectedDeliveryDateString;
+		if(StringUtils.isNotEmpty(expectedDeliveryDateString)) {
+			this.expectedDeliveryDate = LocalDate.parse(this.expectedDeliveryDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	public void setActualDeliveryDateString(String actualDeliveryDateString) {
+		this.actualDeliveryDateString = actualDeliveryDateString;
+		if(StringUtils.isNotEmpty(actualDeliveryDateString)) {
+			this.actualDeliveryDate = LocalDate.parse(this.actualDeliveryDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	public void setPurchaseOrderDateString(String purchaseOrderDateString) {
+		this.purchaseOrderDateString = purchaseOrderDateString;
+		if(StringUtils.isNotEmpty(purchaseOrderDateString)) {
+			this.purchaseOrderDate = LocalDate.parse(this.purchaseOrderDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	public String getAmendmentDateString() {
+		if(this.amendmentDate != null) {
+			return this.amendmentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+	}
+	
+	public void setAmendmentDateString(String amendmentDateString) {
+		this.amendmentDateString = amendmentDateString;
+		if(StringUtils.isNotEmpty(amendmentDateString)) {
+			this.amendmentDate = LocalDate.parse(this.amendmentDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	public String getProjectStartDateString() {
+		if(this.projectStartDate != null) {
+			return this.projectStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+	}
+	
+	public void setProjectStartDateString(String projectStartDateString) {
+		this.projectStartDateString = projectStartDateString;
+		if(StringUtils.isNotEmpty(projectStartDateString)) {
+			this.projectStartDate = LocalDate.parse(this.projectStartDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	//projectStartDate
 }

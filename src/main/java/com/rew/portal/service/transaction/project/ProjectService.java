@@ -51,6 +51,7 @@ public class ProjectService {
 		Project project = this.findById(projectId);
 		if(Objects.nonNull(project)) {
 			project.removeDetail(detailId);
+			project.calculate();
 			projectRepository.save(project);
 		} else {
 			throw new NotFoundException("Details not found with id " + detailId);
