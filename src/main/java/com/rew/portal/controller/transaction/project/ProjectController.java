@@ -57,18 +57,19 @@ public class ProjectController {
 	}
 	
 	@GetMapping("/transaction/projects/find")
-	public ResponseEntity<Project> findById(@RequestParam("id") String projectId) {
-		Project project = projectService.findById(projectId);
+	public ResponseEntity<Project> findById(@RequestParam("id") String projectId, 
+			@RequestParam("amendmentNo") Integer amendmentNo) {
+		Project project = projectService.findById(projectId, amendmentNo);
 		return Objects.isNull(project) ? 
 				new ResponseEntity<Project>(HttpStatus.NOT_FOUND) 
 				: new ResponseEntity<Project>(project, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/transaction/projects/delete")
-	public ResponseEntity<Map<String, String>> delete(@RequestParam("id") String projectId) {
+	public ResponseEntity<Map<String, String>> delete(@RequestParam("id") String projectId, @RequestParam("amendmentNo") Integer amendmentNo) {
 		Map<String, String> response = new HashMap<>();
 		try {
-			projectService.delete(projectId);
+			projectService.delete(projectId, amendmentNo);
 			response.put("status", "success");
 			response.put("message", "Project deleted successfully");
 			return new ResponseEntity<Map<String, String>>(response, HttpStatus.OK);
@@ -83,10 +84,10 @@ public class ProjectController {
 	
 	@DeleteMapping("/transaction/projects/detail/delete")
 	public ResponseEntity<Map<String, String>> deleteDetail(@RequestParam("id") String projectId, 
-			@RequestParam("detailId") Integer detailId ) {
+			@RequestParam("amendmentNo") Integer amendmentNo, @RequestParam("detailId") Integer detailId ) {
 		Map<String, String> response = new HashMap<>();
 		try {
-			projectService.deleteDetail(projectId, detailId);
+			projectService.deleteDetail(projectId, amendmentNo, detailId);
 			response.put("status", "success");
 			response.put("message", "project items removed successfully");
 			return new ResponseEntity<Map<String, String>>(response, HttpStatus.OK);

@@ -48,7 +48,7 @@ import com.rew.portal.model.common.PkGenerationSignature;
 @Builder
 @Entity(name="project_h")
 @Table(name="project_h")
-@IdClass(PojectId.class)
+@IdClass(ProjectId.class)
 public class Project implements PkGenerationSignature, Serializable {
 
 	private static final long serialVersionUID = 8902793404469284744L;

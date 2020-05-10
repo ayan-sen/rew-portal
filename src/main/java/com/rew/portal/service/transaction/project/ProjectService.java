@@ -10,9 +10,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 import com.rew.portal.model.transaction.project.Project;
 import com.rew.portal.model.transaction.project.ProjectDetails;
+import com.rew.portal.model.transaction.project.ProjectId;
 import com.rew.portal.repository.transaction.project.ProjectRepository;
 
 @Service
@@ -27,8 +27,8 @@ public class ProjectService {
 		return projectRepository.save(project);
 	}
 	
-	public Project findById(String projectId) {
-		Optional<Project> opt = projectRepository.findById(projectId);
+	public Project findById(String projectId, Integer amendmentNo) {
+		Optional<Project> opt = projectRepository.findById(new ProjectId(projectId, amendmentNo));
 		return opt.isPresent() ? opt.get() : null;
 	}
 	
@@ -37,8 +37,8 @@ public class ProjectService {
 		return projects;
 	}
 	
-	public void delete(String projectId) throws NotFoundException {
-		Project project = this.findById(projectId);
+	public void delete(String projectId, Integer amendmentNo) throws NotFoundException {
+		Project project = this.findById(projectId, amendmentNo);
 		if(Objects.nonNull(project)) {
 			project.setIsActive(false);
 			projectRepository.save(project);
@@ -47,8 +47,8 @@ public class ProjectService {
 		}
 	}
 	
-	public void deleteDetail(String projectId, int detailId) throws NotFoundException { 
-		Project project = this.findById(projectId);
+	public void deleteDetail(String projectId, Integer amendmentNo, int detailId) throws NotFoundException { 
+		Project project = this.findById(projectId, amendmentNo);
 		if(Objects.nonNull(project)) {
 			project.removeDetail(detailId);
 			project.calculate();

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class PojectId implements Serializable {
+public class ProjectId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
