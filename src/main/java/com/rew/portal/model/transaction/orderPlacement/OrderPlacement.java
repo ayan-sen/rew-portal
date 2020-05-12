@@ -1,13 +1,6 @@
 package com.rew.portal.model.transaction.orderPlacement;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,16 +33,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
@@ -93,13 +76,6 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 
 	@Transient
 	private String expectedDeliveryDateString;
-
-	@JsonIgnore
-	@Column(name = "actualDeliveryDate")
-	private LocalDate actualDeliveryDate;
-
-	@Transient
-	private String actualDeliveryDateString;
 
 	@Column(name = "status", nullable = false)
 	private String status;
@@ -200,28 +176,11 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 		return null;
 	}
 
-	public String getActualDeliveryDateString() {
-		if (this.actualDeliveryDate != null) {
-			return this.actualDeliveryDate.format(DateTimeFormatter
-					.ofPattern("yyyy-MM-dd"));
-		}
-		return null;
-	}
-
 	public void setExpectedDeliveryDateString(String expectedDeliveryDateString) {
 		this.expectedDeliveryDateString = expectedDeliveryDateString;
 		if (StringUtils.isNotEmpty(expectedDeliveryDateString)) {
 			this.expectedDeliveryDate = LocalDate.parse(
 					this.expectedDeliveryDateString,
-					DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		}
-	}
-
-	public void setActualDeliveryDateString(String actualDeliveryDateString) {
-		this.actualDeliveryDateString = actualDeliveryDateString;
-		if (StringUtils.isNotEmpty(actualDeliveryDateString)) {
-			this.actualDeliveryDate = LocalDate.parse(
-					this.actualDeliveryDateString,
 					DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		}
 	}
