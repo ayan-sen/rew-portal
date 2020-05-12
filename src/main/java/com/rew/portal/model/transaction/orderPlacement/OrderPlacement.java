@@ -244,7 +244,7 @@ public class OrderPlacement implements PkGenerationSignature, Serializable {
 	public void setOrderDateString(String orderDateString) {
 		this.orderDateString = orderDateString;
 		if (StringUtils.isNotEmpty(orderDateString)) {
-			this.actualDeliveryDate = LocalDate.parse(
+			this.orderDate = LocalDate.parse(
 					this.orderDateString,
 					DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		}

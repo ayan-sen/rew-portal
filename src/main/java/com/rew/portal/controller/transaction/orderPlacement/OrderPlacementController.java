@@ -106,7 +106,7 @@ public class OrderPlacementController {
 		}
 	}
 	
-	@GetMapping("/transaction/orders/invoice")
+	@GetMapping(value = "/transaction/orders/invoice", produces = MediaType.APPLICATION_PDF_VALUE )
 	public ResponseEntity<InputStreamResource> generateInvoice(@RequestParam("id") String orderId) {
 		
 		try {
