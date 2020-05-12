@@ -66,7 +66,7 @@ public class RewPortalApplication implements CommandLineRunner {
 								.details(dtls)
 								.build();
 								
-		
+		//orderPlacementService.generateInvoice("REW/O/110/2019-20");
 		
 		//OrderPlacement p = orderPlacementService.findById("REW/O/104/2019-20");
 		//System.out.println(p);

@@ -54,6 +54,12 @@ public class OrderPlacementDetails implements Serializable {
 	@Column(name="quantity", length=20, nullable=false)
 	private Double quantity;
 	
+	@Column(name="rate", length=20, nullable=false)
+	private Double rate;
+	
+	@Column(name="amount", length=20, nullable=false)
+	private Double amount;
+	
 	@JsonIgnore
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)

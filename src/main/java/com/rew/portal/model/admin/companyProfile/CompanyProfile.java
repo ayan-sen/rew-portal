@@ -46,8 +46,8 @@ public class CompanyProfile implements Serializable {
 	@Column(name="pan", length=10, nullable=false)
 	private String pan;
 	
-	@Column(name="regAddress", length=100, nullable=false)
-	private Long regAddress;
+	@Column(name="regAddress", length=200, nullable=false)
+	private String regAddress;
 	
 	@Column(name="primaryEmailId", length=50, nullable=false)
 	private String primaryEmailId;
@@ -56,13 +56,16 @@ public class CompanyProfile implements Serializable {
 	private String secondaryEmailId;
 	
 	@Column(name="primaryContactNo", length=15, nullable=false)
-	private Long primaryContactNo;
+	private String primaryContactNo;
 	
 	@Column(name="secondContactNo", length=15, nullable=false)
-	private Long secondContactNo;
+	private String secondContactNo;
 	
 	@Column(name="website", length=30, nullable=false)
 	private String website;
+	
+	@Column(name="cin", length=40, nullable=false)
+	private String cin;
 	
 	@OneToMany(mappedBy="companyProfile", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<WorkUnitDetails> details = new ArrayList<>();
