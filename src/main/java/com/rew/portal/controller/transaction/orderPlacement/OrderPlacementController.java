@@ -108,7 +108,6 @@ public class OrderPlacementController {
 	
 	@GetMapping(value = "/transaction/orders/invoice", produces = MediaType.APPLICATION_PDF_VALUE )
 	public ResponseEntity<InputStreamResource> generateInvoice(@RequestParam("id") String orderId) {
-		
 		try {
 			ByteArrayInputStream bis = orderPlacementService.generateInvoice(orderId);
 			HttpHeaders headers = new HttpHeaders();

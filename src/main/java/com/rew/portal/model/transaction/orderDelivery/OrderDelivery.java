@@ -1,8 +1,9 @@
 package com.rew.portal.model.transaction.orderDelivery;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,8 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,9 +58,12 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Column(name="billNo", nullable=false, length=20)
 	private String billNo;
 	
-	@Temporal(TemporalType.DATE)
+	@JsonIgnore
 	@Column(name="billDate", nullable=false)
-	private Date billDate;
+	private LocalDate billDate;
+	
+	@Transient
+	private String billDateString;
 	
 	@Column(name="orderId", length=20)
 	private String orderId;

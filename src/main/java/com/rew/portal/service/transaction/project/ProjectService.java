@@ -7,6 +7,7 @@ import java.util.Optional;
 import javassist.NotFoundException;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class ProjectService {
 	@Resource
 	private ProjectRepository projectRepository;
 	
+	@Transactional
 	public Project save(Project project) {
 		List<ProjectDetails> details = project.getDetails();
 		details.forEach(d -> d.setProject(project));

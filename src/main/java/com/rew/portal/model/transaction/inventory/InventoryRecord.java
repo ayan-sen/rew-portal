@@ -1,6 +1,9 @@
 package com.rew.portal.model.transaction.inventory;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -28,7 +31,7 @@ import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
 import com.rew.portal.model.common.PkGenerationSignature;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
-import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
+import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
 
 @EqualsAndHashCode
 @Getter
@@ -51,6 +54,19 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 	@Column(name="referenceType", length=20, nullable=false)
 	private String referenceType;
 	
+	@Column(name="referenceId", length=20, nullable=false)
+	private String referenceId;
+	
+	@JsonIgnore
+	@Column(name="referenceDate", length=20, nullable=false)
+	private LocalDate referenceDate;
+	
+	@Transient
+	private String referenceDateString;
+	
+	@Column(name="referenceDetailId", length=20, nullable=false)
+	private Integer referenceDetailId;
+	
 	@Column(name="inOutFlag", length=10, nullable=false)
 	private String inOutFlag;
 	
@@ -65,12 +81,6 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 	
 	@Column(name="siteId", length=10, nullable=false)
 	private String siteId;
-	
-	/*@JsonIgnore
-	@Setter
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "referenceId", referencedColumnName="deliveryId", nullable=false)
-	private OrderDelivery invOrderDelivery;*/
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
@@ -89,7 +99,7 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 
 	@Override
 	public String getTableName() {
-		return "inventory";
+		return "inventory_record";
 	}
 
 	@Override
@@ -100,5 +110,23 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 	@Override
 	public boolean enableSuffix() {
 		return true;
+	}
+	
+	public static List<InventoryRecord> createFromOrderDelivery(OrderDelivery delivery) {
+		List<OrderDeliveryDetails> deliveryDetails = delivery.getDetails();
+		return deliveryDetails.stream().map(d -> {
+			InventoryRecord record = InventoryRecord.builder()
+					.referenceType("OD")
+					.referenceId(delivery.getDeliveryId())
+					.referenceDate(delivery.getBillDate())
+					.referenceDetailId(d.getDetailId())
+					.inOutFlag("IN")
+					.rawMaterialCode(d.getRmId())
+					.unitCode(d.getUnitId())
+					.quantity(d.getQuantity())
+					.siteId(delivery.getSiteId())
+					.build();
+			return record;
+		}).collect(Collectors.toList());
 	}
 }
