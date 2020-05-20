@@ -44,7 +44,7 @@ public class OrderDeliveryService {
 
 		OrderDelivery delivery = orderDeliveryRepository.save(orderDelivery);
 		List<InventoryRecord> records =InventoryRecord.createFromOrderDelivery(delivery);	
-		inventoryRecordRepository.saveAll(records);
+		records.forEach(record -> inventoryRecordRepository.save(record) );
 		
 		TransactionRecord record = TransactionRecord.createFromOrderDelivery(delivery);
 		transactionRecordRepository.save(record);

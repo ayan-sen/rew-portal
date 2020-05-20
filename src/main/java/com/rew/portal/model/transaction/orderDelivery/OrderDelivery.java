@@ -3,6 +3,7 @@ package com.rew.portal.model.transaction.orderDelivery;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -166,5 +168,19 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	
 	public void removeDetail(int detailId) {
 		details.removeIf(d -> d.getDetailId() == detailId);
+	}
+	
+	public String getBillDateString() {
+		if(this.billDate != null) {
+			return this.billDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+	}
+	
+	public void setBillDateString(String billDateString) {
+		this.billDateString = billDateString;
+		if(StringUtils.isNotEmpty(billDateString)) {
+			this.billDate = LocalDate.parse(this.billDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
 	}
 }

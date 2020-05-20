@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -22,14 +23,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
-import com.rew.portal.model.common.PkGenerationSignature;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
 
@@ -41,15 +40,14 @@ import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
 @Builder
 @Entity(name="inventory_record")
 @Table(name="inventory_record")
-public class InventoryRecord implements PkGenerationSignature, Serializable {
+public class InventoryRecord implements Serializable {
 
 	private static final long serialVersionUID = 3226091850722591474L;
 
 	@Id
-	@GenericGenerator(name="id-generator", strategy = "com.rew.portal.repository.common.SequenceGenerator")
-	@GeneratedValue(generator="id-generator")
+	@GeneratedValue(strategy=GenerationType.TABLE)
 	@Column(name="inventoryId", length=20)
-	private String inventoryId;
+	private Integer inventoryId;
 	
 	@Column(name="referenceType", length=20, nullable=false)
 	private String referenceType;
@@ -92,26 +90,6 @@ public class InventoryRecord implements PkGenerationSignature, Serializable {
 	@JoinColumn(name="unitCode", referencedColumnName="unitId", insertable=false,updatable=false)
 	private Unit unit;
 
-	@Override
-	public String getPrefix() {
-		return "REW/I/";
-	}
-
-	@Override
-	public String getTableName() {
-		return "inventory_record";
-	}
-
-	@Override
-	public String getIdColName() {
-		return "inventoryId";
-	}
-	
-	@Override
-	public boolean enableSuffix() {
-		return true;
-	}
-	
 	public static List<InventoryRecord> createFromOrderDelivery(OrderDelivery delivery) {
 		List<OrderDeliveryDetails> deliveryDetails = delivery.getDetails();
 		return deliveryDetails.stream().map(d -> {

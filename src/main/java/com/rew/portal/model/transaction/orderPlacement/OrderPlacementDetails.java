@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,4 +76,24 @@ public class OrderPlacementDetails implements Serializable {
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
 	private Unit unit;
+	
+	@Transient
+	private String rmName;
+	
+	@Transient
+	private String unitName;
+	
+	public String getRmName() {
+		if(this.rawMaterial != null) {
+			return this.rawMaterial.getName();
+		}
+		return rmName;
+	}
+	
+	public String getUnitName() {
+		if(this.unit != null) {
+			return this.unit.getUnitName();
+		}
+		return unitName;
+	}
 }
