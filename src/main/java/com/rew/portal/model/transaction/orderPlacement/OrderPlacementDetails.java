@@ -61,6 +61,13 @@ public class OrderPlacementDetails implements Serializable {
 	@Column(name="amount", length=20, nullable=false)
 	private Double amount;
 	
+	@Setter
+	@Column(name="alreadyOrderedQuantity", length=20, nullable=true)
+	private Double alreadyOrderedQuantity;
+	
+	@Transient
+	private Double remainingQuantity;
+	
 	@JsonIgnore
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -95,5 +102,13 @@ public class OrderPlacementDetails implements Serializable {
 			return this.unit.getUnitName();
 		}
 		return unitName;
+	}
+	
+	public Double getRemainingQuantity() {
+		if(this.alreadyOrderedQuantity != null) {
+			return this.quantity - this.alreadyOrderedQuantity;
+		} else {
+			return this.quantity;
+		}
 	}
 }

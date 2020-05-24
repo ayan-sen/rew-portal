@@ -43,7 +43,6 @@ import com.rew.portal.model.transaction.project.Project;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Entity(name = "orderplacement_h")
 @Table(name = "orderplacement_h")

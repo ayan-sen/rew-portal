@@ -15,10 +15,13 @@ import org.springframework.stereotype.Service;
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
+import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
+import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
 import com.rew.portal.model.transaction.record.TransactionRecord;
 import com.rew.portal.repository.transaction.inventoryRecord.InventoryRecordRepository;
 import com.rew.portal.repository.transaction.orderDelivery.OrderDeliveryRepository;
 import com.rew.portal.repository.transaction.record.TransactionRecordRepository;
+import com.rew.portal.service.transaction.orderPlacement.OrderPlacementService;
 
 @Service
 public class OrderDeliveryService {
@@ -31,6 +34,9 @@ public class OrderDeliveryService {
 	
 	@Resource
 	private TransactionRecordRepository transactionRecordRepository;
+	
+	@Resource
+	private OrderPlacementService orderPlacementService;
 	
 	@Transactional
 	public OrderDelivery save(OrderDelivery orderDelivery) {
@@ -48,6 +54,19 @@ public class OrderDeliveryService {
 		
 		TransactionRecord record = TransactionRecord.createFromOrderDelivery(delivery);
 		transactionRecordRepository.save(record);
+		
+		OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
+		List<OrderPlacementDetails> opDetails = op.getDetails();
+		
+		// update order placement details quantity
+		details.forEach(dtl -> {
+			System.out.println(dtl.getRmId());
+			OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
+			System.out.println("DONE");
+			Double alreadyOrderedQuantity  = opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0 + dtl.getQuantity();
+			opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
+		});
+		orderPlacementService.save(op);
 		
 		return delivery;
 	}
