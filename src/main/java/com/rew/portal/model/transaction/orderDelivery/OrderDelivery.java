@@ -2,7 +2,6 @@ package com.rew.portal.model.transaction.orderDelivery;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +37,7 @@ import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
+import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 
 @EqualsAndHashCode
 @Getter
@@ -114,30 +114,41 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@OneToMany(mappedBy="orderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<OrderDeliveryDetails> details = new ArrayList<>();
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="supplierId", referencedColumnName="clientId", insertable=false,updatable=false)
 	private Client supplier;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="supplierDetailsId", referencedColumnName="detailId", insertable=false,updatable=false)
-	private ClientDetails detailId;
+	private ClientDetails supplierDetail;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="consigneeId", referencedColumnName="clientId", insertable=false,updatable=false)
 	private Client consignee;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="consigneeDetailsId", referencedColumnName="detailId", insertable=false,updatable=false)
 	private ClientDetails consigneeDetail;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="siteId", referencedColumnName="siteId", insertable=false,updatable=false)
 	private WorkUnitDetails workUnitDetail;
+	
+	@JsonIgnore
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="orderId", referencedColumnName="orderId", insertable=false,updatable=false)
+	private OrderPlacement orderPlacement;
 	
 //	@Setter
 //	@OneToOne(mappedBy="invOrderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
@@ -182,5 +193,33 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 		if(StringUtils.isNotEmpty(billDateString)) {
 			this.billDate = LocalDate.parse(this.billDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		}
+	}
+	
+	public String getSupplierName() {
+		if (this.supplier != null) {
+			return this.supplier.getClientName();
+		}
+		return null;
+	}
+
+	public String getSupplierIdentifier() {
+		if (this.supplierDetail != null) {
+			return this.supplierDetail.getIdentifier();
+		}
+		return null;
+	}
+	
+	public String getConsigneeIdentifier() {
+		if (this.consigneeDetail != null) {
+			return this.consigneeDetail.getIdentifier();
+		}
+		return null;
+	}
+	
+	public String getConsigneeName() {
+		if (this.consignee != null) {
+			return this.consignee.getClientName();
+		}
+		return null;
 	}
 }

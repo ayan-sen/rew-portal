@@ -72,8 +72,16 @@ public class OrderDeliveryService {
 	}
 	
 	public OrderDelivery findById(String clientId) {
-		Optional<OrderDelivery> opt = orderDeliveryRepository.findById(clientId);
-		return opt.isPresent() ? opt.get() : null;
+		OrderDelivery opt = orderDeliveryRepository.findById(clientId).orElse(null);
+		if(opt != null) {
+			List<OrderDeliveryDetails> details = opt.getDetails();
+			List<OrderPlacementDetails> opDetails = opt.getOrderPlacement().getDetails();
+			details.forEach(dtl ->  {
+				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(), dtl.getRmId())).findFirst().orElse(null);
+				dtl.setRemainingQuantity(dtl.getQuantity() - opDtl.getAlreadyOrderedQuantity() - opDtl.getQuantity());
+			});
+		}
+		return opt;
 	}
 	
 	public List<OrderDelivery> findAll() {

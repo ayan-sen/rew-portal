@@ -1,6 +1,7 @@
 package com.rew.portal.model.transaction.orderDelivery;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,12 +23,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
+import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
 
 @EqualsAndHashCode
 @Getter
@@ -60,6 +65,14 @@ public class OrderDeliveryDetails implements Serializable {
 	@Column(name="amount", length=20, nullable=false)
 	private Double amount;
 
+	@Setter
+	@Transient
+	private Double remainingQuantity;
+	
+	@Setter
+	@Transient
+	private Double oldQuantity;
+	
 	@JsonIgnore
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -76,4 +89,22 @@ public class OrderDeliveryDetails implements Serializable {
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
 	private Unit unit;
+	
+	public String getRmName() {
+		if(this.rawMaterial != null) {
+			return this.rawMaterial.getName();
+		}
+		return null;
+	}
+	
+	public String getUnitName() {
+		if(this.unit != null) {
+			return this.unit.getUnitName();
+		}
+		return null;
+	}
+	
+	public Double getRemainingQuantity() {
+		return this.quantity;
+	}
 }
