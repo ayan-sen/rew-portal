@@ -1,7 +1,6 @@
 package com.rew.portal.model.transaction.orderDelivery;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,15 +22,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
-import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
 
 @EqualsAndHashCode
 @Getter
@@ -105,6 +101,6 @@ public class OrderDeliveryDetails implements Serializable {
 	}
 	
 	public Double getRemainingQuantity() {
-		return this.quantity;
+		return this.remainingQuantity;
 	}
 }

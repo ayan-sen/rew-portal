@@ -63,7 +63,8 @@ public class OrderDeliveryService {
 			System.out.println(dtl.getRmId());
 			OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
 			System.out.println("DONE");
-			Double alreadyOrderedQuantity  = opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0 + dtl.getQuantity();
+			Double alreadyOrderedQuantity  = ((opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) + dtl.getQuantity()) 
+													- (dtl.getOldQuantity() != null ? dtl.getOldQuantity() : 0.0) ;
 			opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
 		});
 		orderPlacementService.save(op);
@@ -78,7 +79,8 @@ public class OrderDeliveryService {
 			List<OrderPlacementDetails> opDetails = opt.getOrderPlacement().getDetails();
 			details.forEach(dtl ->  {
 				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(), dtl.getRmId())).findFirst().orElse(null);
-				dtl.setRemainingQuantity(dtl.getQuantity() - opDtl.getAlreadyOrderedQuantity() - opDtl.getQuantity());
+				dtl.setRemainingQuantity((opDtl.getQuantity() - opDtl.getAlreadyOrderedQuantity()) + dtl.getQuantity());
+				dtl.setOldQuantity(dtl.getQuantity());
 			});
 		}
 		return opt;
@@ -98,6 +100,20 @@ public class OrderDeliveryService {
 			transactionRecordRepository.deleteByReferenceId(orderDelivery.getDeliveryId());
 			TransactionRecord record = TransactionRecord.createFromOrderDelivery(orderDelivery);
 			transactionRecordRepository.save(record);
+			
+			List<OrderDeliveryDetails> details = orderDelivery.getDetails();
+			OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
+			List<OrderPlacementDetails> opDetails = op.getDetails();
+			// update order placement details quantity
+			details.forEach(dtl -> {
+				System.out.println(dtl.getRmId());
+				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
+				System.out.println("DONE");
+				Double alreadyOrderedQuantity  = (opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) - dtl.getQuantity(); 
+				opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
+			});
+			orderPlacementService.save(op);
+			
 		} else {
 			throw new NotFoundException("Order not found with order id" + orderDeliveryId);
 		}
@@ -107,6 +123,9 @@ public class OrderDeliveryService {
 	public void deleteDetail(String orderDeliveryId, int detailId) throws NotFoundException {
 		OrderDelivery orderDelivery = this.findById(orderDeliveryId);
 		if(Objects.nonNull(orderDelivery)) {
+			
+			OrderDeliveryDetails odtls = orderDelivery.getDetails().stream().filter(dtl -> dtl.getDetailId() == detailId).findFirst().get();
+			
 			orderDelivery.removeDetail(detailId);
 			orderDeliveryRepository.save(orderDelivery);
 			inventoryRecordRepository.deleteByReferenceIdAndReferenceDetailId(orderDeliveryId, detailId);
