@@ -75,12 +75,13 @@ public class OrderDeliveryDetails implements Serializable {
 	@JoinColumn(name = "deliveryId", referencedColumnName="deliveryId", nullable=false)
 	private OrderDelivery orderDelivery;
 	
-	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="rmId", referencedColumnName="code", insertable=false,updatable=false)
 	private RawMaterial rawMaterial;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
@@ -102,5 +103,12 @@ public class OrderDeliveryDetails implements Serializable {
 	
 	public Double getRemainingQuantity() {
 		return this.remainingQuantity;
+	}
+	
+	public String getDeliveryId() {
+		if(this.orderDelivery != null) {
+			return this.orderDelivery.getDeliveryId();
+		}
+		return null;
 	}
 }

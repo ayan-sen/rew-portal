@@ -111,4 +111,11 @@ public class OrderPlacementDetails implements Serializable {
 			return this.quantity;
 		}
 	}
+	
+	public String getOrderId() {
+		if(this.orderPlacement != null) {
+			return this.orderPlacement.getOrderId();
+		}
+		return null;
+	}
 }

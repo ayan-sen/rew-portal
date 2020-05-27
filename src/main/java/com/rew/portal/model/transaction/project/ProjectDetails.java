@@ -82,4 +82,18 @@ public class ProjectDetails implements Serializable{
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
 	private Unit unit;
 	
+	
+	public String getProjectId() {
+		if(this.project != null) {
+			return this.project.getProjectId();
+		}
+		return null;
+	}
+	
+	public Integer getAmendmentNo() {
+		if(this.project != null) {
+			return this.project.getAmendmentNo();
+		}
+		return null;
+	}
 }

@@ -123,15 +123,31 @@ public class OrderDeliveryService {
 	public void deleteDetail(String orderDeliveryId, int detailId) throws NotFoundException {
 		OrderDelivery orderDelivery = this.findById(orderDeliveryId);
 		if(Objects.nonNull(orderDelivery)) {
-			
-			OrderDeliveryDetails odtls = orderDelivery.getDetails().stream().filter(dtl -> dtl.getDetailId() == detailId).findFirst().get();
-			
-			orderDelivery.removeDetail(detailId);
-			orderDeliveryRepository.save(orderDelivery);
-			inventoryRecordRepository.deleteByReferenceIdAndReferenceDetailId(orderDeliveryId, detailId);
-			transactionRecordRepository.deleteByReferenceId(orderDelivery.getDeliveryId());
-			TransactionRecord record = TransactionRecord.createFromOrderDelivery(orderDelivery);
-			transactionRecordRepository.save(record);
+			Optional<OrderDeliveryDetails> opodtls = orderDelivery.getDetails().stream().filter(dtl -> dtl.getDetailId() == detailId).findFirst();
+			if(opodtls.isPresent()) {
+				OrderDeliveryDetails odtls = opodtls.get();
+				
+				orderDelivery.removeDetail(detailId);
+				orderDeliveryRepository.save(orderDelivery);
+				inventoryRecordRepository.deleteByReferenceIdAndReferenceDetailId(orderDeliveryId, detailId);
+				transactionRecordRepository.deleteByReferenceId(orderDelivery.getDeliveryId());
+				TransactionRecord record = TransactionRecord.createFromOrderDelivery(orderDelivery);
+				transactionRecordRepository.save(record);
+				
+				
+				OrderPlacement oph = orderDelivery.getOrderPlacement();
+				List<OrderPlacementDetails> opDetails = oph.getDetails();
+				
+				
+				//update order placement table order quantity
+				Optional<OrderPlacementDetails> opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),odtls.getRmId())).findFirst();
+				if(opDtl.isPresent()) {
+					OrderPlacementDetails op = opDtl.get();
+					Double alreadyOrderedQuantity  =  op.getAlreadyOrderedQuantity() - odtls.getQuantity();
+					op.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
+				}
+				orderPlacementService.save(oph);
+			}
 		} else {
 			throw new NotFoundException("Delivery item not found with id" + orderDeliveryId);
 		}
