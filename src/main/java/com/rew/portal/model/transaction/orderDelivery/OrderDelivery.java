@@ -106,6 +106,9 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Column(name="siteId", length=20, nullable=false)
 	private String siteId;
 	
+	@Column(name="projectId", length=20, nullable=false)
+	private String projectId;
+	
 	@Setter
 	@JsonProperty("isActive")
 	@Column(name="isActive", length=1, nullable=false)

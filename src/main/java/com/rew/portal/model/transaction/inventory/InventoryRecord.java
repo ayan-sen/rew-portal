@@ -68,8 +68,8 @@ public class InventoryRecord implements Serializable {
 	@Column(name="inOutFlag", length=10, nullable=false)
 	private String inOutFlag;
 	
-	@Column(name="rawMaterialCode", length=20, nullable=false)
-	private String rawMaterialCode;
+	@Column(name="materialCode", length=20, nullable=false)
+	private String materialCode;
 	
 	@Column(name="unitCode", length=20, nullable=false)
 	private String unitCode;
@@ -80,9 +80,15 @@ public class InventoryRecord implements Serializable {
 	@Column(name="siteId", length=10, nullable=false)
 	private String siteId;
 	
+	@Column(name="itemType", length=10, nullable=false)
+	private String itemType;
+	
+	@Column(name="projectId", length=20, nullable=false)
+	private String projectId;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="rawMaterialCode", referencedColumnName="code", insertable=false,updatable=false)
+	@JoinColumn(name="materialCode", referencedColumnName="code", insertable=false,updatable=false)
 	private RawMaterial rawMaterial;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -99,10 +105,12 @@ public class InventoryRecord implements Serializable {
 					.referenceDate(delivery.getBillDate())
 					.referenceDetailId(d.getDetailId())
 					.inOutFlag("IN")
-					.rawMaterialCode(d.getRmId())
+					.materialCode(d.getRmId())
 					.unitCode(d.getUnitId())
 					.quantity(d.getQuantity())
 					.siteId(delivery.getSiteId())
+					.itemType("R")
+					.projectId(d.getOrderDelivery().getProjectId())
 					.build();
 			return record;
 		}).collect(Collectors.toList());

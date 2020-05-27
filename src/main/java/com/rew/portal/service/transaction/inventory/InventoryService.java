@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
@@ -27,9 +28,10 @@ public class InventoryService {
 		List<InventoryRecord> records = inventoryRecordRepository.findAll();
 		Map<String, Map<String, Map<String, Double>>> grouping = records
 				.stream()
+				.filter(i -> StringUtils.equals(i.getItemType(), "R"))
 				.collect(
 						Collectors.groupingBy(
-								InventoryRecord::getRawMaterialCode,
+								InventoryRecord::getMaterialCode,
 								Collectors.groupingBy(
 										InventoryRecord::getSiteId,
 										Collectors
