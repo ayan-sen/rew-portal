@@ -14,9 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,6 +21,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
@@ -33,7 +33,6 @@ import com.rew.portal.model.admin.unit.Unit;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Entity(name="project_d")
 @Table(name="project_d")
@@ -61,7 +60,6 @@ public class ProjectDetails implements Serializable{
 	@Column(name="amount", length=20, nullable=false)
 	private Double amount;
 	
-	@JsonIgnore
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns(
@@ -70,13 +68,16 @@ public class ProjectDetails implements Serializable{
 			@JoinColumn(name = "amendmentNo", referencedColumnName="amendmentNo", nullable=false)
 		}
 	)
+	@JsonIgnore
 	private Project project;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="rmId", referencedColumnName="code", insertable=false,updatable=false)
 	private RawMaterial rawMaterial;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)

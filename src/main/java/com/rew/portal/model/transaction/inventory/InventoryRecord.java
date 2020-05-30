@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -31,6 +32,8 @@ import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
+import com.rew.portal.model.transaction.orderProcessing.OrderProcessing;
+import com.rew.portal.model.transaction.orderProcessing.OrderProcessingDetails;
 
 @EqualsAndHashCode
 @Getter
@@ -41,6 +44,20 @@ import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
 @Entity(name="inventory_record")
 @Table(name="inventory_record")
 public class InventoryRecord implements Serializable {
+
+	private static final String ORDER_PROCESSING = "OP";
+
+	private static final String OUT = "OUT";
+
+	private static final String IN = "IN";
+
+	private static final String ORDER_DELIVERY = "OD";
+
+	private static final String PRODUCT = "P";
+
+	private static final String RAW_MATERIAL = "R";
+	
+	private static final String SEMI_FINISHED_PRODUCT = "S";
 
 	private static final long serialVersionUID = 3226091850722591474L;
 
@@ -100,19 +117,39 @@ public class InventoryRecord implements Serializable {
 		List<OrderDeliveryDetails> deliveryDetails = delivery.getDetails();
 		return deliveryDetails.stream().map(d -> {
 			InventoryRecord record = InventoryRecord.builder()
-					.referenceType("OD")
+					.referenceType(ORDER_DELIVERY)
 					.referenceId(delivery.getDeliveryId())
 					.referenceDate(delivery.getBillDate())
 					.referenceDetailId(d.getDetailId())
-					.inOutFlag("IN")
+					.inOutFlag(IN)
 					.materialCode(d.getRmId())
 					.unitCode(d.getUnitId())
 					.quantity(d.getQuantity())
 					.siteId(delivery.getSiteId())
-					.itemType("R")
-					.projectId(d.getOrderDelivery().getProjectId())
+					.itemType(RAW_MATERIAL)
+					.projectId(delivery.getProjectId())
 					.build();
 			return record;
+		}).collect(Collectors.toList());
+	}
+	
+	public static List<InventoryRecord> createFromOrderProcessing(OrderProcessing orderProcessing) {
+		List<OrderProcessingDetails> details = orderProcessing.getDetails();
+		return details.stream().map(d -> {
+				InventoryRecord record = InventoryRecord.builder()
+						.referenceType(ORDER_PROCESSING)
+						.referenceId(orderProcessing.getProcessId().toString())
+						.referenceDate(orderProcessing.getProcessDate())
+						.referenceDetailId(d.getProcessDetailsId())
+						.inOutFlag(d.getInOutFlag())
+						.materialCode(d.getMaterialId())
+						.unitCode(d.getMaterialUnit())
+						.quantity(d.getQuantity())
+						.siteId(orderProcessing.getSiteId())
+						.itemType(d.getProcessType())
+						.projectId(orderProcessing.getProjectId())
+						.build();
+				return record;
 		}).collect(Collectors.toList());
 	}
 }

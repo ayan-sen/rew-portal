@@ -17,4 +17,12 @@ public interface InventoryRecordRepository extends JpaRepository<InventoryRecord
 	public List<InventoryRecord> findByReferenceIdAndReferenceDetailId(String referenceId, Integer referenceDetailId);
 	
 	public void deleteByReferenceIdAndReferenceDetailId(String referenceId, Integer referenceDetailId);
+	
+	public List<InventoryRecord> findByProjectId(String projectId);
+	
+	public List<InventoryRecord> findByProjectIdAndItemType(String projectId, String itemType);
+	
+	public List<InventoryRecord> findByProjectIdAndItemTypeAndSiteId(String projectId, String itemType, String siteId);
+	
+	public List<InventoryRecord> findByProjectIdAndSiteId(String projectId, String siteId);
 }

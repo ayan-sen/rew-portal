@@ -30,15 +30,17 @@ public class InventoryService {
 				.stream()
 				.filter(i -> StringUtils.equals(i.getItemType(), "R"))
 				.collect(
-						Collectors.groupingBy(
-								InventoryRecord::getMaterialCode,
-								Collectors.groupingBy(
-										InventoryRecord::getSiteId,
+						Collectors
+								.groupingBy(
+										InventoryRecord::getMaterialCode,
 										Collectors
 												.groupingBy(
-														InventoryRecord::getInOutFlag,
+														InventoryRecord::getSiteId,
 														Collectors
-																.summingDouble(InventoryRecord::getQuantity)))));
+																.groupingBy(
+																		InventoryRecord::getInOutFlag,
+																		Collectors
+																				.summingDouble(InventoryRecord::getQuantity)))));
 
 		Set<String> labels = grouping.keySet();
 		List<Double> dumdumQuantity = new ArrayList<>();
@@ -66,4 +68,21 @@ public class InventoryService {
 		chartData.put("singur", singurQuantity);
 		return chartData;
 	}
+
+	public Map<String, Double> getMaterialStatusByProjectIdAndSiteId(String projectId, String siteId) {
+		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdAndSiteId(projectId, siteId);
+
+		Map<String, Double> productMap = records
+				.stream()
+				.collect(Collectors.groupingBy(
+							InventoryRecord::getMaterialCode, 
+							Collectors.groupingBy(InventoryRecord::getInOutFlag ,
+								Collectors.summingDouble(InventoryRecord::getQuantity))))
+				.entrySet().stream()
+							.collect(Collectors.toMap(entry -> entry.getKey(), 
+									entry -> entry.getValue().getOrDefault("IN", 0.0) - entry.getValue().getOrDefault("OUT", 0.0)));
+		return productMap;
+
+	}
+	
 }

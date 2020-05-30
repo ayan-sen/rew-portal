@@ -60,9 +60,7 @@ public class OrderDeliveryService {
 		
 		// update order placement details quantity
 		details.forEach(dtl -> {
-			System.out.println(dtl.getRmId());
 			OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
-			System.out.println("DONE");
 			Double alreadyOrderedQuantity  = ((opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) + dtl.getQuantity()) 
 													- (dtl.getOldQuantity() != null ? dtl.getOldQuantity() : 0.0) ;
 			opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
