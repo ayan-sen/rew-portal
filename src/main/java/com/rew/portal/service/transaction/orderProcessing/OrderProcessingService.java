@@ -1,5 +1,7 @@
 package com.rew.portal.service.transaction.orderProcessing;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -111,5 +113,29 @@ public class OrderProcessingService {
 		} else {
 			throw new NotFoundException("Details not found with id " + detailId);
 		}
+	}
+	
+	public List<Map<String, Object>> getMaterialListByProject(String projectId, String siteId) {
+		List<Map<String, Object>> materials = orderProcessingRepository.getMaterialListByProject(projectId);
+		Map<String, Double> inventoryStatus = inventoryService.getMaterialStatusByProjectIdAndSiteId(projectId, siteId);
+		List<Map<String, Object>> enrichedMaterialsList = new ArrayList<>();
+		materials.forEach(material -> {
+			Map<String, Object> materialNew = new HashMap<>();
+			materialNew.putAll(material);
+			
+			String matType = (String) material.getOrDefault("type", "");
+			String matCode = (String) material.getOrDefault("code", "");
+			Double availableQuantity = inventoryStatus.getOrDefault(material.getOrDefault("code", ""), 0.0);
+			materialNew.put("availableQuantity", availableQuantity);
+			if(StringUtils.equals(matType, PRODUCT)) {
+				ProjectDetails projectDetails = projectDetailsRepository.findOneByProject_ProjectIdAndProject_AmendmentNoAndRmId(projectId, 0, matCode);
+				if(projectDetails != null) {
+					Double remainingQuantity = projectDetails.getQuantity() - availableQuantity;
+					materialNew.put("remainingQuantity", remainingQuantity);
+				}
+			}
+			enrichedMaterialsList.add(materialNew);
+		});
+		return enrichedMaterialsList;
 	}
 }

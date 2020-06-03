@@ -94,4 +94,9 @@ public class OrderProcessingController {
 			return new ResponseEntity<Map<String, String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/transaction/processes/materials")
+	public ResponseEntity<List<Map<String, Object>>> findMaterialsByProject(@RequestParam("projectId") String projectId, @RequestParam("siteId") String siteId) {
+		return new ResponseEntity<List<Map<String, Object>>>(orderProcessingService.getMaterialListByProject(projectId, siteId), HttpStatus.OK);
+	}
 }
