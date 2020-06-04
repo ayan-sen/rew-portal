@@ -70,7 +70,7 @@ public class InventoryService {
 	}
 
 	public Map<String, Double> getMaterialStatusByProjectIdAndSiteId(String projectId, String siteId) {
-		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdAndSiteId(projectId, siteId);
+		List<InventoryRecord> records = inventoryRecordRepository.findByProjectId(projectId);
 
 		Map<String, Double> productMap = records
 				.stream()

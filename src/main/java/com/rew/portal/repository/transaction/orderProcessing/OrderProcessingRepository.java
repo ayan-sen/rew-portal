@@ -19,7 +19,9 @@ public interface OrderProcessingRepository extends JpaRepository<OrderProcessing
 				+ "WHERE CODE IN ("
 				+ "SELECT DISTINCT d.rmid FROM project_d d WHERE projectId=?1 "
 				+ "UNION "
-				+ "SELECT DISTINCT i.materialCode FROM inventory_record i WHERE projectId=?1 " 
+				+ "SELECT DISTINCT i.materialCode FROM inventory_record i WHERE projectId=?1 "
+				+ "UNION "
+				+ "SELECT DISTINCT r.code FROM raw_material r WHERE r.type='S' " 
 				+ ") AND r.unitId = u.unitId", nativeQuery=true)
 	public List<Map<String, Object>> getMaterialListByProject(String projectId);
 }
