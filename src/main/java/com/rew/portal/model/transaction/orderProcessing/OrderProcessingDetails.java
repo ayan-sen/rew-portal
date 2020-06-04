@@ -52,8 +52,8 @@ public class OrderProcessingDetails implements Serializable {
 	@Column(name="quantity", length=20)
 	private Double quantity;
 	
-	@Column(name="inOutFlag", length=20)
-	private String inOutFlag;
+	@Column(name="materialType", length=20)
+	private String materialType;
 	
 	@Setter
 	@Transient

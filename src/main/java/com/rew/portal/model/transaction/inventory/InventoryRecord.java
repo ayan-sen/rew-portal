@@ -141,12 +141,12 @@ public class InventoryRecord implements Serializable {
 						.referenceId(orderProcessing.getProcessId().toString())
 						.referenceDate(orderProcessing.getProcessDate())
 						.referenceDetailId(d.getProcessDetailsId())
-						.inOutFlag(d.getInOutFlag())
+						.inOutFlag(d.getProcessType())
 						.materialCode(d.getMaterialId())
 						.unitCode(d.getMaterialUnit())
 						.quantity(d.getQuantity())
 						.siteId(orderProcessing.getSiteId())
-						.itemType(d.getProcessType())
+						.itemType(d.getMaterialType())
 						.projectId(orderProcessing.getProjectId())
 						.build();
 				return record;
