@@ -87,7 +87,7 @@ public class OrderProcessingService {
 	
 	@Transactional
 	public List<OrderProcessing> findAll() {
-		List<OrderProcessing> processings = orderProcessingRepository.findByIsActive(true);
+		List<OrderProcessing> processings = orderProcessingRepository.findByIsActiveOrderByProcessDateDescSiteIdAscProjectIdAsc(true);
 		return processings;
 	}
 	
