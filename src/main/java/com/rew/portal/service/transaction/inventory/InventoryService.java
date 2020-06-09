@@ -32,7 +32,8 @@ public class InventoryService {
 				.collect(
 						Collectors
 								.groupingBy(
-										InventoryRecord::getMaterialCode,
+										inv -> StringUtils.join(inv.getMaterialCode().toUpperCase() , "(" , inv.getUnitCode() , ")")
+										 ,
 										Collectors
 												.groupingBy(
 														InventoryRecord::getSiteId,
