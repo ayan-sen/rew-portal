@@ -105,7 +105,7 @@ public class InventoryService {
 		project.getExpectedDeliveryDate();
 		
 		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdAndItemTypeOrderByReferenceDateAsc(projectId, "P");
-		Set<String> dateString = records.stream().map(r -> r.getReferenceDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).collect(Collectors.toCollection(LinkedHashSet::new));
+		Set<String> dateString = records.stream().map(r -> r.getReferenceDate().format(DateTimeFormatter.ofPattern("dd/MM"))).collect(Collectors.toCollection(LinkedHashSet::new));
 		Set<LocalDate> dates = records.stream().map(r -> r.getReferenceDate()).collect(Collectors.toCollection(LinkedHashSet::new));
 		List<String> materials = new ArrayList<>();
 		List<Map<String, Object>> series = new ArrayList<>();
