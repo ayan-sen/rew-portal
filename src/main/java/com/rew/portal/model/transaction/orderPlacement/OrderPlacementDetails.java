@@ -74,11 +74,13 @@ public class OrderPlacementDetails implements Serializable {
 	@JoinColumn(name = "orderId", referencedColumnName="orderId", nullable=false)
 	private OrderPlacement orderPlacement;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="rmId", referencedColumnName="code", insertable=false,updatable=false)
 	private RawMaterial rawMaterial;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
