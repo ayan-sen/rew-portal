@@ -2,6 +2,7 @@ package com.rew.portal.model.transaction.orderProcessing;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -45,8 +50,12 @@ public class OrderProcessing implements Serializable {
 	@Column(name="projectId", length=20, nullable=false)
 	private String projectId;
 	
+	@JsonIgnore
 	@Column(name="processDate", nullable=false)
 	private LocalDate processDate;
+	
+	@Transient
+	private String processDateString;
 	
 	@Column(name="siteId", length=10, nullable=false)
 	private String siteId;
@@ -64,5 +73,19 @@ public class OrderProcessing implements Serializable {
 	
 	public void removeDetail(int detailId) {
 		details.removeIf(d -> d.getProcessDetailsId() == detailId);
+	}
+	
+	public String getProcessDateString() {
+		if(this.processDate != null) {
+			return this.processDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+	}
+	
+	public void setProcessDateString(String processDateString) {
+		this.processDateString = processDateString;
+		if(StringUtils.isNotEmpty(processDateString)) {
+			this.processDate = LocalDate.parse(this.processDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
 	}
 }

@@ -1,9 +1,13 @@
 package com.rew.portal.service.transaction.inventory;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,13 +19,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
+import com.rew.portal.model.transaction.project.Project;
+import com.rew.portal.model.transaction.project.ProjectDetails;
 import com.rew.portal.repository.transaction.inventoryRecord.InventoryRecordRepository;
+import com.rew.portal.repository.transaction.project.ProjectRepository;
 
 @Service
 public class InventoryService {
 
 	@Resource
 	private InventoryRecordRepository inventoryRecordRepository;
+	
+	@Resource
+	private ProjectRepository projectRepository;
 
 	@SuppressWarnings("rawtypes")
 	public Map<String, Collection> getStatus() {
@@ -85,5 +95,48 @@ public class InventoryService {
 		return productMap;
 
 	}
+	
+	
+	public Map<String, Collection> getProjectProgressStatus(String projectId) {
+		
+		Project project = projectRepository.findLatest(projectId);
+		List<ProjectDetails> details = project.getDetails();
+		Double maxQuantiry = details.stream().map(d -> d.getQuantity()).mapToDouble(v -> v).max().orElse(0.0);
+		project.getExpectedDeliveryDate();
+		
+		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdAndItemTypeOrderByReferenceDateAsc(projectId, "P");
+		Set<String> dateString = records.stream().map(r -> r.getReferenceDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).collect(Collectors.toCollection(LinkedHashSet::new));
+		Set<LocalDate> dates = records.stream().map(r -> r.getReferenceDate()).collect(Collectors.toCollection(LinkedHashSet::new));
+		List<String> materials = new ArrayList<>();
+		List<Map<String, Object>> series = new ArrayList<>();
+		Map<String, List<InventoryRecord>> matList = records.stream().collect(Collectors.groupingBy(InventoryRecord::getMaterialCode));
+		Map<String, Collection> chartData = new HashMap<>();
+		matList.entrySet().stream().forEachOrdered(r -> {
+			List<Double> matQuantity = new ArrayList<>();
+			List<InventoryRecord> matRecords = r.getValue();
+			materials.add(r.getKey());
+			dates.stream().forEachOrdered(d -> { 
+				Double quantity = matRecords.stream().filter(m -> m.getReferenceDate().compareTo(d) <= 0).collect(Collectors.summingDouble(m -> m.getQuantity()));
+				matQuantity.add(quantity);
+			});
+			
+			Map<String, Object> seriesMap = new HashMap<>();
+			seriesMap.put("name", r.getKey());
+			seriesMap.put("data", matQuantity);
+			series.add(seriesMap);
+		});
+		
+		
+		
+		chartData.put("labels", dateString);
+		chartData.put("series", series);
+		chartData.put("max", Arrays.asList(maxQuantiry));
+		chartData.put("startDate", Arrays.asList(project.getProjectStartDateString()));
+		chartData.put("deliveryDate", Arrays.asList(project.getExpectedDeliveryDate()));
+		chartData.put("materials", materials);
+		return chartData;
+		
+	}
+	
 	
 }

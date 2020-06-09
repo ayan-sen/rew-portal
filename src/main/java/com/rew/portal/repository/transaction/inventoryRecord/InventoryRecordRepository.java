@@ -25,4 +25,6 @@ public interface InventoryRecordRepository extends JpaRepository<InventoryRecord
 	public List<InventoryRecord> findByProjectIdAndItemTypeAndSiteId(String projectId, String itemType, String siteId);
 	
 	public List<InventoryRecord> findByProjectIdAndSiteId(String projectId, String siteId);
+	
+	public List<InventoryRecord> findByProjectIdAndItemTypeOrderByReferenceDateAsc(String projectId, String itemType);
 }

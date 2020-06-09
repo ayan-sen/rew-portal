@@ -273,5 +273,4 @@ public class Project implements PkGenerationSignature, Serializable {
 		}
 	}
 	
-	//projectStartDate
 }

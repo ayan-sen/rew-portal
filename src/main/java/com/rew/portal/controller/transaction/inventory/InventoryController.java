@@ -34,4 +34,12 @@ public class InventoryController {
 		return new ResponseEntity<Map<String, Double>>(inventoryService.
 				getMaterialStatusByProjectIdAndSiteId(projectId, siteId), HttpStatus.OK);
 	}
+	
+	//
+	@SuppressWarnings("rawtypes")
+	@GetMapping("/transaction/inventory/project-status")
+	public ResponseEntity<Map<String, Collection>> getProjectDailyStatus(@RequestParam(name="projectId", required=true) String projectId) {
+		return new ResponseEntity<Map<String, Collection>>(inventoryService.getProjectProgressStatus(projectId), HttpStatus.OK);
+	}
+	
 }
