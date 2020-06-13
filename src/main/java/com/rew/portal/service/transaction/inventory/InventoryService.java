@@ -105,18 +105,24 @@ public class InventoryService {
 		project.getExpectedDeliveryDate();
 		
 		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdAndItemTypeOrderByReferenceDateAsc(projectId, "P");
-		Set<String> dateString = records.stream().map(r -> r.getReferenceDate().format(DateTimeFormatter.ofPattern("dd/MM"))).collect(Collectors.toCollection(LinkedHashSet::new));
-		Set<LocalDate> dates = records.stream().map(r -> r.getReferenceDate()).collect(Collectors.toCollection(LinkedHashSet::new));
+		
+		Set<LocalDate> dates = records.stream()
+										.map(r -> r.getReferenceDate())
+										.collect(Collectors.toCollection(LinkedHashSet::new));
+		
 		List<String> materials = new ArrayList<>();
 		List<Map<String, Object>> series = new ArrayList<>();
-		Map<String, List<InventoryRecord>> matList = records.stream().collect(Collectors.groupingBy(InventoryRecord::getMaterialCode));
+		Map<String, List<InventoryRecord>> matList = records.stream()
+															.collect(Collectors.groupingBy(InventoryRecord::getMaterialCode));
 		Map<String, Collection> chartData = new HashMap<>();
 		matList.entrySet().stream().forEachOrdered(r -> {
 			List<Double> matQuantity = new ArrayList<>();
 			List<InventoryRecord> matRecords = r.getValue();
 			materials.add(r.getKey());
 			dates.stream().forEachOrdered(d -> { 
-				Double quantity = matRecords.stream().filter(m -> m.getReferenceDate().compareTo(d) <= 0).collect(Collectors.summingDouble(m -> m.getQuantity()));
+				Double quantity = matRecords.stream()
+											.filter(m -> m.getReferenceDate().compareTo(d) <= 0)
+											.collect(Collectors.summingDouble(m -> m.getQuantity()));
 				matQuantity.add(quantity);
 			});
 			
@@ -125,14 +131,14 @@ public class InventoryService {
 			seriesMap.put("data", matQuantity);
 			series.add(seriesMap);
 		});
-		
-		
-		
+
+		Set<String> dateString = dates.stream()
+									.map(r -> r.format(DateTimeFormatter.ofPattern("dd/MM")))
+									.collect(Collectors.toCollection(LinkedHashSet::new));
+
 		chartData.put("labels", dateString);
 		chartData.put("series", series);
 		chartData.put("max", Arrays.asList(maxQuantiry));
-		chartData.put("startDate", Arrays.asList(project.getProjectStartDateString()));
-		chartData.put("deliveryDate", Arrays.asList(project.getExpectedDeliveryDate()));
 		chartData.put("materials", materials);
 		return chartData;
 		

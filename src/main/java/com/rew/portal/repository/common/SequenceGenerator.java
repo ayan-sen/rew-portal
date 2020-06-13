@@ -26,14 +26,23 @@ public class SequenceGenerator implements IdentifierGenerator {
 
         try {
             Statement statement=connection.createStatement();
-
-            String sql = StringUtils.join("select count(",sig.getIdColName(),") as Id from ",sig.getTableName());
+            String sql = null;
+            int basePos = sig.getPrefix().length()+1;
+            if(sig.enableSuffix()) {
+            	
+            	sql = "SELECT MAX(SUBSTR(SUBSTRING_INDEX("+ sig.getIdColName() +", \"/\", 3), "+ basePos +")) FROM "+sig.getTableName();
+            } else {
+            	sql = "SELECT max(SUBSTR("+sig.getIdColName()+", "+ basePos + ")) FROM "+sig.getTableName();
+            }
+            //String sql = StringUtils.join("select count(",sig.getIdColName(),") as Id from ",sig.getTableName());
             
             ResultSet rs=statement.executeQuery(sql);
 
             if(rs.next())
             {
-                int id=rs.getInt(1)+101;
+            	
+            	int maxId = rs.getInt(1);
+            	int id = maxId == 0 ? 101 : maxId+1;
                 String generatedId = "";
                 if(sig.enableSuffix()) {
                 	generatedId = StringUtils.join(sig.getPrefix(),new Integer(id).toString(),"/",this.getCurrentFinancialYear());

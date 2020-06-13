@@ -3,6 +3,8 @@ package com.rew.portal.service.admin.rawMaterial;
 import java.util.List;
 import java.util.Optional;
 
+import javassist.NotFoundException;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ public class RawMaterialService {
 	private RawMaterialRepository rawMaterialRepository;
 	
 	public void save(RawMaterial rawMaterial) {
-		rawMaterialRepository.saveAndFlush(rawMaterial);
+		rawMaterialRepository.save(rawMaterial);
 	}
 	
 	public RawMaterial findById(String code) {
@@ -35,5 +37,16 @@ public class RawMaterialService {
 	
 	public List<RawMaterial> findAllProducts() {
 		return rawMaterialRepository.findByIsActiveAndType(true, "P");
+	}
+	
+	public void delete(String rmId) throws NotFoundException {
+		Optional<RawMaterial> optRm = rawMaterialRepository.findById(rmId);
+		if(optRm.isPresent()) {
+			RawMaterial rm = optRm.get();
+			rm.setIsActive(false);
+			rawMaterialRepository.save(rm);
+		} else {
+			throw new NotFoundException("Material not found with client id" + rmId);
+		}
 	}
 }
