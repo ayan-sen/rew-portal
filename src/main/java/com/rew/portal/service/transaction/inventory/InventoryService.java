@@ -42,7 +42,7 @@ public class InventoryService {
 				.collect(
 						Collectors
 								.groupingBy(
-										inv -> StringUtils.join(inv.getMaterialCode().toUpperCase() , "(" , inv.getUnitCode() , ")")
+										inv -> StringUtils.join(inv.getMaterialName() , "(" , inv.getUnitName() , ")")
 										 ,
 										Collectors
 												.groupingBy(
@@ -86,7 +86,7 @@ public class InventoryService {
 		Map<String, Double> productMap = records
 				.stream()
 				.collect(Collectors.groupingBy(
-							InventoryRecord::getMaterialCode, 
+							InventoryRecord::getMaterialName, 
 							Collectors.groupingBy(InventoryRecord::getInOutFlag ,
 								Collectors.summingDouble(InventoryRecord::getQuantity))))
 				.entrySet().stream()
@@ -113,7 +113,7 @@ public class InventoryService {
 		List<String> materials = new ArrayList<>();
 		List<Map<String, Object>> series = new ArrayList<>();
 		Map<String, List<InventoryRecord>> matList = records.stream()
-															.collect(Collectors.groupingBy(InventoryRecord::getMaterialCode));
+															.collect(Collectors.groupingBy(InventoryRecord::getMaterialName));
 		Map<String, Collection> chartData = new HashMap<>();
 		matList.entrySet().stream().forEachOrdered(r -> {
 			List<Double> matQuantity = new ArrayList<>();

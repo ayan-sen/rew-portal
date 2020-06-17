@@ -23,7 +23,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -102,6 +101,12 @@ public class InventoryRecord implements Serializable {
 	
 	@Column(name="projectId", length=20, nullable=false)
 	private String projectId;
+
+	@Transient
+	private String materialName;
+	
+	@Transient
+	private String unitName;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
@@ -152,4 +157,19 @@ public class InventoryRecord implements Serializable {
 				return record;
 		}).collect(Collectors.toList());
 	}
+
+	public String getMaterialName() {
+		if(this.rawMaterial != null) {
+			return this.rawMaterial.getName();
+		}
+		return this.materialName;
+	}
+	
+	public String getUnitName() {
+		if(this.unit != null) {
+			return this.unit.getUnitName();
+		}
+		return this.unitName;
+	}
+	
 }
