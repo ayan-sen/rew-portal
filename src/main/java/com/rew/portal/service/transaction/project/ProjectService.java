@@ -35,7 +35,7 @@ public class ProjectService {
 	}
 	
 	public List<Project> findAll() {
-		List<Project> projects = projectRepository.findAll();
+		List<Project> projects = projectRepository.findByIsActive(true);
 		return projects;
 	}
 	
