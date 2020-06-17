@@ -20,7 +20,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -94,6 +93,20 @@ public class ProjectDetails implements Serializable{
 	public Integer getAmendmentNo() {
 		if(this.project != null) {
 			return this.project.getAmendmentNo();
+		}
+		return null;
+	}
+	
+	public String getRmName() {
+		if(this.rawMaterial != null) {
+			return this.rawMaterial.getName();
+		}
+		return null;
+	}
+	
+	public String getUnitName() {
+		if(this.rawMaterial != null) {
+			return this.unit.getUnitName();
 		}
 		return null;
 	}
