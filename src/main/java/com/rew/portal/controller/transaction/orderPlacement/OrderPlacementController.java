@@ -114,6 +114,7 @@ public class OrderPlacementController {
 		    headers.add("Content-Disposition", "inline; filename=Invoice_"+orderId+".pdf");
 			return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(bis));
 		} catch (Exception e) {
+			log.error("Exception in file download", e);
 			return new ResponseEntity<InputStreamResource>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

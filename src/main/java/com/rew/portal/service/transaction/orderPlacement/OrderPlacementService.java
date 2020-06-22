@@ -2,11 +2,11 @@ package com.rew.portal.service.transaction.orderPlacement;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,11 +15,12 @@ import javassist.NotFoundException;
 
 import javax.annotation.Resource;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -52,9 +53,6 @@ public class OrderPlacementService {
 	
 	@Resource
 	private CompanyProfileService companyProfileService;
-	
-	@Autowired
-    ResourceLoader resourceLoader;
 	
 	public OrderPlacement save(OrderPlacement orderPlacement) {
 		List<OrderPlacementDetails> details = orderPlacement.getDetails();
@@ -120,9 +118,7 @@ public class OrderPlacementService {
 		PdfPTable table = new PdfPTable(5);
 		table.setWidthPercentage(100);
 		
-		org.springframework.core.io.Resource resource = resourceLoader.getResource("classpath:/static/image/logo.png");
-		Path path = Paths.get(resource.getURI());
-		Image img = Image.getInstance(path.toAbsolutePath().toString());
+		Image img = this.getImage("logo.PNG");
 		img.scalePercent(80);
 
 		PdfPCell imageCell = new PdfPCell(img);
@@ -137,10 +133,9 @@ public class OrderPlacementService {
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 		table.addCell(cell);
 		
-		org.springframework.core.io.Resource resource2 = resourceLoader.getResource("classpath:/static/image/urs.png");
-		Path path2 = Paths.get(resource2.getURI());
-		Image img2 = Image.getInstance(path2.toAbsolutePath().toString());
+		Image img2 = this.getImage("urs.png");
 		img2.scalePercent(80);
+		
 		PdfPCell imageCell2 = new PdfPCell(img2);
 		imageCell2.setBorder(0);
 		imageCell2.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
@@ -269,4 +264,16 @@ public class OrderPlacementService {
 		ct.go();
 	}
 	
+	
+	public Image getImage(String path) throws BadElementException, MalformedURLException, IOException {
+		File file = File.createTempFile("img", "png");
+		FileOutputStream out = new FileOutputStream(file);
+		IOUtils.copy(new ClassPathResource(path).getInputStream(), out);
+
+		if(file.exists()) {
+			file.createNewFile();
+		}
+		Image image = Image.getInstance(file.getAbsolutePath());
+		return image;
+	}
 }

@@ -126,18 +126,18 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="supplierDetailsId", referencedColumnName="detailId", insertable=false,updatable=false)
+	@JoinColumn(name="supplierDetailsId", referencedColumnName="detailId", insertable=false,updatable=false, nullable=true)
 	private ClientDetails supplierDetail;
 	
 	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="consigneeId", referencedColumnName="clientId", insertable=false,updatable=false)
+	@OneToOne(fetch=FetchType.EAGER, optional=true)
+	@JoinColumn(name="consigneeId", referencedColumnName="clientId", insertable=false,updatable=false, nullable=true)
 	private Client consignee;
 	
 	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER, optional=true)
 	@JoinColumn(name="consigneeDetailsId", referencedColumnName="detailId", insertable=false,updatable=false)
 	private ClientDetails consigneeDetail;
 	
