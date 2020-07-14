@@ -23,7 +23,7 @@ public class RewPortalApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println(bcryptEncoder.encode("password"));
+		System.out.println(">> " + bcryptEncoder.encode("abc123"));
 	}
 
 }
