@@ -1,6 +1,7 @@
 package com.rew.portal.service.common;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -10,30 +11,32 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.rew.portal.model.common.UserInfo;
+import com.rew.portal.repository.common.UserRepository;
+
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-	/*@Autowired
-	private UserDao userDao;*/
+	@Autowired
+	private UserRepository userRepository;
 
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		if ("admin".equals(username)) {
-			return new User("admin", "$2a$10$.jrBb0x40fwLLa0cuRy3xeKPtVjoK33iS/DNEblhLHJahPhRp0I5e", new ArrayList<>());
-		} else if ("ayan".equals(username)) {
-			return new User("ayan", "$2a$10$FPEQAZ6epb6.ZLJwfGBCjewhRXO.GFqbMTEbqG5wkgmJXgIMb23xu", new ArrayList<>());
+		
+		Optional<UserInfo> opUserInfo = userRepository.findById(username);
+		if(opUserInfo.isPresent()) {
+			UserInfo userInfo = opUserInfo.get();
+			return new User(userInfo.getUserName(), userInfo.getPassword(), new ArrayList<>());
 		} else {
 			throw new UsernameNotFoundException("User not found with username: " + username);
 		}
 	}
 
-	/*public UserDao save(UserDTO user) {
-		DAOUser newUser = new DAOUser();
-		newUser.setUsername(user.getUsername());
-		newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-		return userDao.save(newUser);
-	}*/
+	public UserInfo save(UserInfo user) {
+		user.setPassword(bcryptEncoder.encode(user.getPassword()));
+		return userRepository.save(user);
+	}
 }
