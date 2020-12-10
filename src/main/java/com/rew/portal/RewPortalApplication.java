@@ -13,9 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class RewPortalApplication implements CommandLineRunner {
 
-	@Autowired
-	private PasswordEncoder bcryptEncoder;
-	
 	public static void main(String[] args) {
 		SpringApplication.run(RewPortalApplication.class, args);
 		
@@ -23,7 +20,7 @@ public class RewPortalApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println(">> " + bcryptEncoder.encode("abc123"));
+
 	}
 
 }
