@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javassist.NotFoundException;
-
 import javax.annotation.Resource;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.hibernate.Hibernate;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -74,23 +73,23 @@ public class OrderPlacementService {
 		return orderPlacementRepository.findByIsActive(true);
 	}
 	
-	public void delete(String orderPlacementId) throws NotFoundException {
+	public void delete(String orderPlacementId) throws ObjectNotFoundException {
 		OrderPlacement orderPlacement = this.findById(orderPlacementId);
 		if(Objects.nonNull(orderPlacement)) {
 			orderPlacement.setIsActive(false);
 			orderPlacementRepository.save(orderPlacement);
 		} else {
-			throw new NotFoundException("Order not found with order id" + orderPlacementId);
+			throw new ObjectNotFoundException("Order not found with order id ", orderPlacementId);
 		}
 	}
 	
-	public void deleteDetail(String orderPlacementId, int detailId) throws NotFoundException {
+	public void deleteDetail(String orderPlacementId, int detailId) throws ObjectNotFoundException {
 		OrderPlacement orderPlacement = this.findById(orderPlacementId);
 		if(Objects.nonNull(orderPlacement)) {
 			orderPlacement.removeDetail(detailId);
 			orderPlacementRepository.save(orderPlacement);
 		} else {
-			throw new NotFoundException("Order detail not found with id " + orderPlacementId);
+			throw new ObjectNotFoundException("Order detail not found with id ", orderPlacementId);
 		}
 	}
 	

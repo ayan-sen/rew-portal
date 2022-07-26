@@ -16,7 +16,7 @@ import com.rew.portal.repository.transaction.orderProcessing.OrderProcessingRepo
 @SpringBootApplication
 @EnableJpaRepositories(basePackages="com.rew.portal.repository")
 @EnableTransactionManagement
-public class RewPortalApplication implements CommandLineRunner {
+public class RewPortalApplication /* implements CommandLineRunner */ {
 
 	/*@Resource
 	private TransactionRepository transactionRepository;*/
@@ -28,13 +28,14 @@ public class RewPortalApplication implements CommandLineRunner {
 		
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		
-		List<Map<String, Object>> list = orderProcessingRepository.getMaterialListByProject("REW/P/116/2019-20");
-		
-		System.out.println(list);
-	}
+	/*
+	 * @Override public void run(String... args) throws Exception {
+	 * 
+	 * List<Map<String, Object>> list =
+	 * orderProcessingRepository.getMaterialListByProject("REW/P/116/2019-20");
+	 * 
+	 * System.out.println(list); }
+	 */
 
 }
 

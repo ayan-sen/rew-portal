@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javassist.NotFoundException;
-
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
@@ -89,7 +88,7 @@ public class OrderDeliveryService {
 	}
 	
 	@Transactional
-	public void delete(String orderDeliveryId) throws NotFoundException {
+	public void delete(String orderDeliveryId) throws ObjectNotFoundException {
 		OrderDelivery orderDelivery = this.findById(orderDeliveryId);
 		if(Objects.nonNull(orderDelivery)) {
 			orderDelivery.setIsActive(false);
@@ -113,12 +112,12 @@ public class OrderDeliveryService {
 			orderPlacementService.save(op);
 			
 		} else {
-			throw new NotFoundException("Order not found with order id" + orderDeliveryId);
+			throw new ObjectNotFoundException("Order not found with order id ", orderDeliveryId);
 		}
 	}
 	
 	@Transactional
-	public void deleteDetail(String orderDeliveryId, int detailId) throws NotFoundException {
+	public void deleteDetail(String orderDeliveryId, int detailId) throws ObjectNotFoundException {
 		OrderDelivery orderDelivery = this.findById(orderDeliveryId);
 		if(Objects.nonNull(orderDelivery)) {
 			Optional<OrderDeliveryDetails> opodtls = orderDelivery.getDetails().stream().filter(dtl -> dtl.getDetailId() == detailId).findFirst();
@@ -147,7 +146,7 @@ public class OrderDeliveryService {
 				orderPlacementService.save(oph);
 			}
 		} else {
-			throw new NotFoundException("Delivery item not found with id" + orderDeliveryId);
+			throw new ObjectNotFoundException("Delivery item not found with id ", orderDeliveryId);
 		}
 	}
 }

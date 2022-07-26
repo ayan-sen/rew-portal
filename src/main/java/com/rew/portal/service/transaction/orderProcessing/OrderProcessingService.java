@@ -7,12 +7,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javassist.NotFoundException;
-
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
@@ -92,26 +91,26 @@ public class OrderProcessingService {
 	}
 	
 	@Transactional
-	public void delete(Integer processingId) throws NotFoundException {
+	public void delete(Integer processingId) throws ObjectNotFoundException {
 		OrderProcessing orderProcessing = this.findById(processingId);
 		if(Objects.nonNull(orderProcessing)) {
 			orderProcessing.setIsActive(false);
 			orderProcessingRepository.save(orderProcessing);
 			inventoryRecordRepository.deleteByReferenceId(processingId.toString());
 		} else {
-			throw new NotFoundException("Order not found with order id" + processingId);
+			throw new ObjectNotFoundException("Order not found with order id", processingId.toString());
 		}
 	}
 	
 	@Transactional
-	public void deleteDetail(Integer processingId, int detailId) throws NotFoundException { 
+	public void deleteDetail(Integer processingId, Integer detailId) throws ObjectNotFoundException { 
 		OrderProcessing orderProcessing = this.findById(processingId);
 		if(Objects.nonNull(orderProcessing)) {
 			orderProcessing.removeDetail(detailId);
 			orderProcessingRepository.save(orderProcessing);
 			inventoryRecordRepository.deleteByReferenceIdAndReferenceDetailId(processingId.toString(), detailId);
 		} else {
-			throw new NotFoundException("Details not found with id " + detailId);
+			throw new ObjectNotFoundException("Details not found with id ", detailId.toString());
 		}
 	}
 	

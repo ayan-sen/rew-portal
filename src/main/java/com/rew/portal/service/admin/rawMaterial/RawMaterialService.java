@@ -3,10 +3,9 @@ package com.rew.portal.service.admin.rawMaterial;
 import java.util.List;
 import java.util.Optional;
 
-import javassist.NotFoundException;
-
 import javax.annotation.Resource;
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
@@ -39,14 +38,14 @@ public class RawMaterialService {
 		return rawMaterialRepository.findByIsActiveAndType(true, "P");
 	}
 	
-	public void delete(String rmId) throws NotFoundException {
+	public void delete(String rmId) throws ObjectNotFoundException {
 		Optional<RawMaterial> optRm = rawMaterialRepository.findById(rmId);
 		if(optRm.isPresent()) {
 			RawMaterial rm = optRm.get();
 			rm.setIsActive(false);
 			rawMaterialRepository.save(rm);
 		} else {
-			throw new NotFoundException("Material not found with client id" + rmId);
+			throw new ObjectNotFoundException("Material not found with client id " , rmId);
 		}
 	}
 }
