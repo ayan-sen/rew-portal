@@ -86,7 +86,7 @@ public class InventoryService {
 		Map<String, Double> productMap = records
 				.stream()
 				.collect(Collectors.groupingBy(
-							InventoryRecord::getMaterialName, 
+							InventoryRecord::getMaterialCode, 
 							Collectors.groupingBy(InventoryRecord::getInOutFlag ,
 								Collectors.summingDouble(InventoryRecord::getQuantity))))
 				.entrySet().stream()
