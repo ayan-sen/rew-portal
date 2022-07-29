@@ -1,6 +1,7 @@
 package com.rew.portal.controller.transaction.record;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rew.portal.model.transaction.record.ExpenseCategory;
 import com.rew.portal.model.transaction.record.ExpenseRecord;
 import com.rew.portal.service.transaction.record.ExpenseRecordService;
 
@@ -55,8 +58,9 @@ public class ExpenseController {
 				expenseRecordService.findAll(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/transaction/expenses/{date}")
-	public ResponseEntity<List<ExpenseRecord>> findAllExpenses(@PathVariable LocalDate date) {
+	@GetMapping("/transaction/expense/date")
+	public ResponseEntity<List<ExpenseRecord>> findAllExpenses(@RequestParam("expenseDate") String expenseDate) {
+		LocalDate date = LocalDate.parse(expenseDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		return new ResponseEntity<List<ExpenseRecord>>(
 				expenseRecordService.findAllByDate(date), HttpStatus.OK);
 	}
@@ -78,6 +82,11 @@ public class ExpenseController {
 			response.put("error", e.getMessage());
 			return new ResponseEntity<Map<String, String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@GetMapping("/transaction/categories")
+	public ResponseEntity<List<ExpenseCategory>> findAll() {
+		return  new ResponseEntity<List<ExpenseCategory>>(expenseRecordService.findAllCategories(), HttpStatus.OK);
 	}
 
 }
