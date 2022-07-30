@@ -144,5 +144,71 @@ public class InventoryService {
 		
 	}
 	
+	@SuppressWarnings("rawtypes")
+	public Map<String, Map<String, Double>> getProductionStatusByProject(String projectId) {
+		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdOrderByReferenceDateAsc(projectId);
+		Map<String, Map<String, Map<String, Map<String, Double>>>> grouping = records
+				.stream()
+				//.filter(i -> StringUtils.equals(i.getItemType(), "R"))
+				.collect(
+						Collectors.groupingBy(inv-> inv.getItemType().toString(), 
+						Collectors
+								.groupingBy(
+										inv -> StringUtils.join(inv.getMaterialName() , "(" , inv.getUnitName() , ")")
+										 ,
+										Collectors
+												.groupingBy(
+														InventoryRecord::getSiteId,
+														Collectors
+																.groupingBy(
+																		InventoryRecord::getInOutFlag,
+																		Collectors
+																				.summingDouble(InventoryRecord::getQuantity))))));
+		
+		Map<String, Double> rawMaterialByProject = enrich(grouping.get("R"));
+		Map<String, Double> productsByProject = enrich(grouping.get("P"));
+		
+		Map<String, Map<String, Double>> projectCurrentStatus = new HashMap<>();
+		projectCurrentStatus.put("rawMaterials", rawMaterialByProject);
+		projectCurrentStatus.put("products", productsByProject);
+		return projectCurrentStatus;
+	}
+
+	private Map<String, Double> enrich(Map<String, Map<String, Map<String, Double>>> materials) {
+		Set<String> labels = materials.keySet();
+		List<Double> dumdumQuantity = new ArrayList<>();
+		List<Double> singurQuantity = new ArrayList<>();
+		
+		Map<String, Double> processingDetails = new HashMap<>();
+
+		labels.stream().forEachOrdered(
+				lebel -> {
+					Map<String, Map<String, Double>> quantityMap = materials
+							.get(lebel);
+					Map<String, Double> dumdumQuantityMap = quantityMap
+							.getOrDefault("DUMDUM", Collections.emptyMap());
+					Map<String, Double> singurQuantityMap = quantityMap
+							.getOrDefault("SINGUR", Collections.emptyMap());
+					double dumdum = dumdumQuantityMap
+							.getOrDefault("IN", 0.0)
+							- dumdumQuantityMap.getOrDefault("OUT", 0.0);
+					dumdumQuantity.add(dumdum);
+					double singur = singurQuantityMap
+							.getOrDefault("IN", 0.0)
+							- singurQuantityMap.getOrDefault("OUT", 0.0);
+					singurQuantity.add(singur);
+					
+					processingDetails.put(lebel, singur + dumdum);
+					
+				});
+
+		Map<String, Collection> chartData = new HashMap<>();
+		chartData.put("labels", labels);
+		chartData.put("dumdum", dumdumQuantity);
+		chartData.put("singur", singurQuantity);
+		return processingDetails;
+	}
+	
+	
 	
 }
