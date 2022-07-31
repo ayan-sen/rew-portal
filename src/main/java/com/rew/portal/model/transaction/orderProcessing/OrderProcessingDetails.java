@@ -10,8 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +26,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rew.portal.model.admin.rawMaterial.RawMaterial;
+import com.rew.portal.model.admin.unit.Unit;
 
 @EqualsAndHashCode
 @Getter
@@ -71,4 +77,30 @@ public class OrderProcessingDetails implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "processId", referencedColumnName="processId", nullable=false)
 	private OrderProcessing orderProcessing;
+	
+	@JsonIgnore
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="materialId", referencedColumnName="code", insertable=false,updatable=false)
+	private RawMaterial material;
+	
+	@JsonIgnore
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="materialUnit", referencedColumnName="unitId", insertable=false,updatable=false)
+	private Unit unit;
+	
+	public String getMaterialName() {
+		if(this.material != null) {
+			return this.material.getName();
+		}
+		return null;
+	}
+	
+	public String getUnitName() {
+		if(this.unit != null) {
+			return this.unit.getUnitName();
+		}
+		return null;
+	}
 }

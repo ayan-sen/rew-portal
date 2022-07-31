@@ -1,11 +1,13 @@
 package com.rew.portal.service.transaction.orderProcessing;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -136,5 +138,12 @@ public class OrderProcessingService {
 			enrichedMaterialsList.add(materialNew);
 		});
 		return enrichedMaterialsList;
+	}
+	
+	public Map<Object, List<Object>> findByProcessDate(LocalDate processDate) {
+		List<OrderProcessing> works = orderProcessingRepository.findByProcessDateOrderByProjectIdAsc(processDate);
+		return works.stream().collect(Collectors.groupingBy(w -> w.getProjectId(), 
+				Collectors.mapping(w -> w.getDetails(), 
+						Collectors.flatMapping(w -> w.stream(), Collectors.toList()))));
 	}
 }

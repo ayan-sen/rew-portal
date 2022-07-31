@@ -1,5 +1,6 @@
 package com.rew.portal.repository.transaction.orderProcessing;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -25,5 +26,7 @@ public interface OrderProcessingRepository extends JpaRepository<OrderProcessing
 				+ ") AND r.unitId = u.unitId", nativeQuery=true)
 	public List<Map<String, Object>> getMaterialListByProject(String projectId);
 	
+	
+	public List<OrderProcessing> findByProcessDateOrderByProjectIdAsc(LocalDate processDate);
 	
 }

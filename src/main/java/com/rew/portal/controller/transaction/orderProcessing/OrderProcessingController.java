@@ -1,5 +1,7 @@
 package com.rew.portal.controller.transaction.orderProcessing;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,5 +100,11 @@ public class OrderProcessingController {
 	@GetMapping("/transaction/processes/materials")
 	public ResponseEntity<List<Map<String, Object>>> findMaterialsByProject(@RequestParam("projectId") String projectId, @RequestParam("siteId") String siteId) {
 		return new ResponseEntity<List<Map<String, Object>>>(orderProcessingService.getMaterialListByProject(projectId, siteId), HttpStatus.OK);
+	}
+	
+	@GetMapping("/transaction/processes/date")
+	public ResponseEntity<Map<Object, List<Object>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate) {
+		LocalDate date = LocalDate.parse(logDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		return ResponseEntity.ok(orderProcessingService.findByProcessDate(date));
 	}
 }
