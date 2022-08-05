@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.rew.portal.model.transaction.record.ExpenseCategory;
 import com.rew.portal.model.transaction.record.ExpenseRecord;
+import com.rew.portal.model.transaction.record.ExpenseSummaryView;
 import com.rew.portal.service.transaction.record.ExpenseRecordService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,12 +62,27 @@ public class ExpenseController {
 	}
 	
 	@GetMapping("/transaction/expense/date")
-	public ResponseEntity<List<ExpenseRecord>> findAllExpenses(@RequestParam("expenseDate") String expenseDate) {
+	public ResponseEntity<List<ExpenseRecord>> findAllExpenses(@RequestParam(name="expenseDate", required = true) String expenseDate, @RequestParam(name = "toDate", required = false) String toDate) {
 		LocalDate date = LocalDate.parse(expenseDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		LocalDate endDate = null;
+		if(StringUtils.isNotEmpty(toDate)) {
+			endDate = LocalDate.parse(toDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
 		return new ResponseEntity<List<ExpenseRecord>>(
-				expenseRecordService.findAllByDate(date), HttpStatus.OK);
+				expenseRecordService.findAllByDate(date, endDate), HttpStatus.OK);
 	}
 
+	
+	@GetMapping("/transaction/expense/report")
+	public ResponseEntity<ExpenseSummaryView> findExpenseReports(@RequestParam(name="expenseDate", required = true) String expenseDate, @RequestParam(name = "toDate", required = false) String toDate) {
+		LocalDate date = LocalDate.parse(expenseDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		LocalDate endDate = null;
+		if(StringUtils.isNotEmpty(toDate)) {
+			endDate = LocalDate.parse(toDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+		return new ResponseEntity<ExpenseSummaryView>(
+				expenseRecordService.getExpenseSummaryView(date, endDate), HttpStatus.OK);
+	}
 
 
 	@DeleteMapping("/transaction/expense/{code}")

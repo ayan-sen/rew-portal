@@ -33,6 +33,7 @@ public class InventoryService {
 	@Resource
 	private ProjectRepository projectRepository;
 
+	
 	@SuppressWarnings("rawtypes")
 	public Map<String, Collection> getStatus() {
 		List<InventoryRecord> records = inventoryRecordRepository.findAll();
@@ -145,7 +146,8 @@ public class InventoryService {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public Map<String, Map<String, Double>> getProductionStatusByProject(String projectId) {
+	public Map<String, Map<String, Object>> getProductionStatusByProject(String projectId) {
+		Project project = projectRepository.findLatest(projectId);
 		List<InventoryRecord> records = inventoryRecordRepository.findByProjectIdOrderByReferenceDateAsc(projectId);
 		Map<String, Map<String, Map<String, Map<String, Double>>>> grouping = records
 				.stream()
@@ -165,21 +167,33 @@ public class InventoryService {
 																		Collectors
 																				.summingDouble(InventoryRecord::getQuantity))))));
 		
-		Map<String, Double> rawMaterialByProject = enrich(grouping.get("R"));
-		Map<String, Double> productsByProject = enrich(grouping.get("P"));
+		Map<String, Object> projectItemMap = new HashMap<>();
+		 project.getDetails().stream().forEach(det -> {
+			projectItemMap.put(StringUtils.join(det.getRmName(), "(" , det.getUnitName() , ")"), det.getQuantity());
+		});
+		 
 		
-		Map<String, Map<String, Double>> projectCurrentStatus = new HashMap<>();
+		
+		Map<String, Object> rawMaterialByProject = enrich(grouping.get("R"), project);
+		Map<String, Object> productsByProject = enrich(grouping.get("P"), project);
+		
+		Map<String, Map<String, Object>> projectCurrentStatus = new HashMap<>();
 		projectCurrentStatus.put("rawMaterials", rawMaterialByProject);
 		projectCurrentStatus.put("products", productsByProject);
 		return projectCurrentStatus;
 	}
 
-	private Map<String, Double> enrich(Map<String, Map<String, Map<String, Double>>> materials) {
+	private Map<String, Object> enrich(Map<String, Map<String, Map<String, Double>>> materials, Project project) {
 		Set<String> labels = materials.keySet();
 		List<Double> dumdumQuantity = new ArrayList<>();
 		List<Double> singurQuantity = new ArrayList<>();
+		Map<String, Object> projectItemMap = new HashMap<>();
+		 project.getDetails().stream().forEach(det -> {
+			projectItemMap.put(StringUtils.join(det.getRmName(), "(" , det.getUnitName() , ")"), det.getQuantity());
+		});
 		
-		Map<String, Double> processingDetails = new HashMap<>();
+		
+		Map<String, Object> processingDetails = new HashMap<>();
 
 		labels.stream().forEachOrdered(
 				lebel -> {
@@ -198,14 +212,22 @@ public class InventoryService {
 							- singurQuantityMap.getOrDefault("OUT", 0.0);
 					singurQuantity.add(singur);
 					
-					processingDetails.put(lebel, singur + dumdum);
+					//processingDetails.put(lebel, singur + dumdum);
+					
+					Object quantity = projectItemMap.get(lebel);
+					
+					processingDetails.put("item", lebel);
+					processingDetails.put("processedQuantity", singur + dumdum);
+					if(quantity != null) {
+						processingDetails.put("quantity", quantity);
+					}
+					
+					
+					
 					
 				});
 
-		Map<String, Collection> chartData = new HashMap<>();
-		chartData.put("labels", labels);
-		chartData.put("dumdum", dumdumQuantity);
-		chartData.put("singur", singurQuantity);
+		
 		return processingDetails;
 	}
 	

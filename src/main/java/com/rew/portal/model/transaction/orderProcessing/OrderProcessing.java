@@ -36,55 +36,55 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-@Entity(name="orderprocessing_h")
-@Table(name="orderprocessing_h")
+@Entity(name = "orderprocessing_h")
+@Table(name = "orderprocessing_h")
 public class OrderProcessing implements Serializable {
 
 	private static final long serialVersionUID = -6850360047765278492L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE)
-	@Column(name="processId", length=20)
+	@GeneratedValue(strategy = GenerationType.TABLE)
+	@Column(name = "processId", length = 20)
 	private Integer processId;
-	
-	@Column(name="projectId", length=20, nullable=false)
+
+	@Column(name = "projectId", length = 20, nullable = false)
 	private String projectId;
-	
+
 	@JsonIgnore
-	@Column(name="processDate", nullable=false)
+	@Column(name = "processDate", nullable = false)
 	private LocalDate processDate;
-	
+
 	@Transient
 	private String processDateString;
-	
-	@Column(name="siteId", length=10, nullable=false)
+
+	@Column(name = "siteId", length = 10, nullable = false)
 	private String siteId;
-	
-	@Column(name="notes", length=100)
+
+	@Column(name = "notes", length = 100)
 	private String notes;
-	
+
 	@Setter
 	@JsonProperty("isActive")
-	@Column(name="isActive", length=1, nullable=false)
+	@Column(name = "isActive", length = 1, nullable = false)
 	private Boolean isActive = true;
-	
+
 	@OneToMany(mappedBy = "orderProcessing", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<OrderProcessingDetails> details = new ArrayList<>();
-	
+
 	public void removeDetail(int detailId) {
 		details.removeIf(d -> d.getProcessDetailsId() == detailId);
 	}
-	
+
 	public String getProcessDateString() {
-		if(this.processDate != null) {
+		if (this.processDate != null) {
 			return this.processDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}
 		return null;
 	}
-	
+
 	public void setProcessDateString(String processDateString) {
 		this.processDateString = processDateString;
-		if(StringUtils.isNotEmpty(processDateString)) {
+		if (StringUtils.isNotEmpty(processDateString)) {
 			this.processDate = LocalDate.parse(this.processDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		}
 	}

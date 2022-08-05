@@ -12,5 +12,8 @@ import com.rew.portal.model.transaction.record.ExpenseRecord;
 public interface ExpenseRepository  extends JpaRepository<ExpenseRecord, Integer> {
 	
 	public List<ExpenseRecord> findByExpenseDate(LocalDate expenseDate);
+	
+	public List<ExpenseRecord> findByExpenseDateBetween(LocalDate expenseDate, LocalDate toDate);
 
+	
 }

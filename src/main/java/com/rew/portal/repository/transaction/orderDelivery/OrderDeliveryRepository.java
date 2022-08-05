@@ -11,4 +11,6 @@ import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 public interface OrderDeliveryRepository extends JpaRepository<OrderDelivery, String> {
 
 	public List<OrderDelivery> findByIsActive(boolean isActive);
+	
+	public List<OrderDelivery> findByProjectId(String projectId);
 }
