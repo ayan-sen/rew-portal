@@ -31,6 +31,8 @@ import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
+import com.rew.portal.model.transaction.orderDespatch.OrderDespatch;
+import com.rew.portal.model.transaction.orderDespatch.OrderDespatchDetails;
 import com.rew.portal.model.transaction.orderProcessing.OrderProcessing;
 import com.rew.portal.model.transaction.orderProcessing.OrderProcessingDetails;
 
@@ -57,6 +59,8 @@ public class InventoryRecord implements Serializable {
 	private static final String RAW_MATERIAL = "R";
 	
 	private static final String SEMI_FINISHED_PRODUCT = "S";
+	
+	private static final String ORDER_DESPATCH = "OS";
 
 	private static final long serialVersionUID = 3226091850722591474L;
 
@@ -156,6 +160,28 @@ public class InventoryRecord implements Serializable {
 						.build();
 				return record;
 		}).collect(Collectors.toList());
+	}
+	
+	public static List<InventoryRecord> createFromOrderDespatch(OrderDespatch orderDespatch) {
+		List<OrderDespatchDetails> details = orderDespatch.getDetails();
+		return details.stream().map(d -> {
+			InventoryRecord record = InventoryRecord.builder()
+					.referenceType(ORDER_DESPATCH)
+					.referenceId(orderDespatch.getDespatchId())
+					.referenceDate(orderDespatch.getDespatchDate())
+					.referenceDetailId(d.getDespatchDetailsId())
+					.inOutFlag(OUT)
+					.materialCode(d.getMaterialId())
+					.unitCode(d.getMaterialUnit())
+					.quantity(d.getQuantity())
+					.siteId(orderDespatch.getSiteId())
+					.itemType(d.getMaterialType())
+					.projectId(orderDespatch.getProjectId())
+					.build();
+			return record;
+					
+		}).collect(Collectors.toList());
+		
 	}
 
 	public String getMaterialName() {
