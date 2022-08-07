@@ -121,10 +121,15 @@ public class InventoryService {
 			List<InventoryRecord> matRecords = r.getValue();
 			materials.add(r.getKey());
 			dates.stream().forEachOrdered(d -> { 
-				Double quantity = matRecords.stream()
+				Double inQuantity = matRecords.stream()
 											.filter(m -> m.getReferenceDate().compareTo(d) <= 0)
+											.filter(m -> m.getInOutFlag().equals("IN"))
 											.collect(Collectors.summingDouble(m -> m.getQuantity()));
-				matQuantity.add(quantity);
+				Double outQuantity = matRecords.stream()
+											.filter(m -> m.getReferenceDate().compareTo(d) <= 0)
+											.filter(m -> m.getInOutFlag().equals("OUT"))
+											.collect(Collectors.summingDouble(m -> m.getQuantity()));
+				matQuantity.add(inQuantity - outQuantity);
 			});
 			
 			Map<String, Object> seriesMap = new HashMap<>();

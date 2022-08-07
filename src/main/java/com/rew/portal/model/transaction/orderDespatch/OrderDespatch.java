@@ -69,20 +69,20 @@ public class OrderDespatch implements PkGenerationSignature, Serializable {
 	@Column(name="vehicleNo", length=25)
 	private String vehicleNo;
 	
-	@Column(name="amount", length=20, nullable=false)
-	private Double amount;
-	
-	@Column(name="freightCharges", length=20)
-	private Double freightCharges;
-	
-	@Column(name="cgstAmount", length=20, nullable=false)
-	private Double cgstAmount;
-	
-	@Column(name="sgstAmount", length=20, nullable=false)
-	private Double sgstAmount;
-	
-	@Column(name="totalAmount", length=20, nullable=false)
-	private Double totalAmount;
+	/*
+	 * @Column(name="amount", length=20, nullable=false) private Double amount;
+	 * 
+	 * @Column(name="freightCharges", length=20) private Double freightCharges;
+	 * 
+	 * @Column(name="cgstAmount", length=20, nullable=false) private Double
+	 * cgstAmount;
+	 * 
+	 * @Column(name="sgstAmount", length=20, nullable=false) private Double
+	 * sgstAmount;
+	 * 
+	 * @Column(name="totalAmount", length=20, nullable=false) private Double
+	 * totalAmount;
+	 */
 	
 	@OneToMany(mappedBy = "orderDespatch", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<OrderDespatchDetails> details = new ArrayList<>();
@@ -114,13 +114,13 @@ public class OrderDespatch implements PkGenerationSignature, Serializable {
 	@JsonIgnore
 	@Override
 	public String getTableName() {
-		return "orderdelivery_h";
+		return "orderdespatch_h";
 	}
 
 	@JsonIgnore
 	@Override
 	public String getIdColName() {
-		return "deliveryId";
+		return "despatchId";
 	}
 	
 	@Override
