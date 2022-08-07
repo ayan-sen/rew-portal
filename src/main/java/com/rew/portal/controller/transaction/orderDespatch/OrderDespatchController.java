@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rew.portal.model.transaction.orderDespatch.OrderDespatch;
-import com.rew.portal.service.transaction.service.OrderDespatchService;
+import com.rew.portal.service.transaction.orderDespatch.OrderDespatchService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +49,11 @@ public class OrderDespatchController {
 	@GetMapping("/transaction/despatches")
 	public ResponseEntity<List<OrderDespatch>> findAll() {
 		return new ResponseEntity<List<OrderDespatch>>(orderDespatchService.findAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/transaction/despatches/project")
+	public ResponseEntity<List<OrderDespatch>> findByProjectId(@RequestParam("projectId") String projectId) {
+		return new ResponseEntity<List<OrderDespatch>>(orderDespatchService.getDespatchesByProjectId(projectId), HttpStatus.OK);
 	}
 	
 	

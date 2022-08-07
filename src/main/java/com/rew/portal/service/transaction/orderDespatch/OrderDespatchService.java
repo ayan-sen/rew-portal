@@ -1,4 +1,4 @@
-package com.rew.portal.service.transaction.service;
+package com.rew.portal.service.transaction.orderDespatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,6 +118,8 @@ public class OrderDespatchService {
 		return enrichedMaterialsList;
 	}
 	
-	
+	public List<OrderDespatch> getDespatchesByProjectId(String projectId) {
+		return orderDespatchRepository.findByProjectId(projectId);
+	}
 	
 }
