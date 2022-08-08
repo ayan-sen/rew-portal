@@ -97,9 +97,16 @@ public class OrderDespatchDetails implements Serializable {
 		return null;
 	}
 	
-	public String getUnitName() {
+	public String getMaterialUnitName() {
 		if(this.unit != null) {
 			return this.unit.getUnitName();
+		}
+		return null;
+	}
+	
+	public String getDespatchId() {
+		if(this.orderDespatch != null) {
+			return this.orderDespatch.getDespatchId();
 		}
 		return null;
 	}

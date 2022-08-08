@@ -65,8 +65,6 @@ public class OrderPlacementDetails implements Serializable {
 	@Column(name="alreadyOrderedQuantity", length=20, nullable=true)
 	private Double alreadyOrderedQuantity;
 	
-	@Transient
-	private Double remainingQuantity;
 	
 	@JsonIgnore
 	@Setter
@@ -84,7 +82,7 @@ public class OrderPlacementDetails implements Serializable {
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
-	private Unit unit;
+	private Unit unit; 
 	
 	@Transient
 	private String rmName;
@@ -106,13 +104,7 @@ public class OrderPlacementDetails implements Serializable {
 		return unitName;
 	}
 	
-	public Double getRemainingQuantity() {
-		if(this.alreadyOrderedQuantity != null) {
-			return this.quantity - this.alreadyOrderedQuantity;
-		} else {
-			return this.quantity;
-		}
-	}
+
 	
 	public String getOrderId() {
 		if(this.orderPlacement != null) {

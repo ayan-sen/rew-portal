@@ -118,7 +118,7 @@ public class OrderProcessingService {
 	
 	public List<Map<String, Object>> getMaterialListByProject(String projectId, String siteId) {
 		List<Map<String, Object>> materials = orderProcessingRepository.getMaterialListByProject(projectId);
-		Map<String, Double> inventoryStatus = inventoryService.getMaterialStatusByProjectIdAndSiteId(projectId, siteId);
+		Map<String, Double> inventoryStatus = this.getMaterialStatusByProjectIdAndSiteId(projectId, siteId);
 		List<Map<String, Object>> enrichedMaterialsList = new ArrayList<>();
 		materials.forEach(material -> {
 			Map<String, Object> materialNew = new HashMap<>();
@@ -145,5 +145,22 @@ public class OrderProcessingService {
 		return works.stream().collect(Collectors.groupingBy(w -> w.getProjectId(), 
 				Collectors.mapping(w -> w.getDetails(), 
 						Collectors.flatMapping(w -> w.stream(), Collectors.toList()))));
+	}
+	
+	public Map<String, Double> getMaterialStatusByProjectIdAndSiteId(String projectId, String siteId) {
+		List<InventoryRecord> records = inventoryRecordRepository.findByProjectId(projectId);
+
+		Map<String, Double> productMap = records
+				.stream()
+				.filter(m -> !StringUtils.equalsIgnoreCase(m.getReferenceType(), "OS"))
+				.collect(Collectors.groupingBy(
+							InventoryRecord::getMaterialCode, 
+							Collectors.groupingBy(InventoryRecord::getInOutFlag ,
+								Collectors.summingDouble(InventoryRecord::getQuantity))))
+				.entrySet().stream()
+							.collect(Collectors.toMap(entry -> entry.getKey(), 
+									entry -> entry.getValue().getOrDefault("IN", 0.0) - entry.getValue().getOrDefault("OUT", 0.0)));
+		return productMap;
+
 	}
 }

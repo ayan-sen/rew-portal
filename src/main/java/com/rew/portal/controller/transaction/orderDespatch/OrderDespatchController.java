@@ -3,6 +3,7 @@ package com.rew.portal.controller.transaction.orderDespatch;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rew.portal.model.transaction.orderDespatch.OrderDespatch;
+import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 import com.rew.portal.service.transaction.orderDespatch.OrderDespatchService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -78,5 +80,13 @@ public class OrderDespatchController {
 	@GetMapping("/transaction/despatches/materials")
 	public ResponseEntity<List<Map<String, Object>>> findMaterialsByProject(@RequestParam("projectId") String projectId, @RequestParam("siteId") String siteId) {
 		return new ResponseEntity<List<Map<String, Object>>>(orderDespatchService.getMaterialListByProject(projectId, siteId), HttpStatus.OK);
+	}
+	
+	@GetMapping("/transaction/despatch/find")
+	public ResponseEntity<OrderDespatch> findById(@RequestParam("id") String despatchId) {
+		OrderDespatch despatch = orderDespatchService.findById(despatchId);
+		return Objects.isNull(despatch) ? 
+				new ResponseEntity<OrderDespatch>(HttpStatus.NOT_FOUND) 
+				: new ResponseEntity<OrderDespatch>(despatch, HttpStatus.OK);
 	}
 }
