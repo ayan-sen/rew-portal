@@ -29,8 +29,8 @@ public class SequenceGenerator implements IdentifierGenerator {
             String sql = null;
             int basePos = sig.getPrefix().length()+1;
             if(sig.enableSuffix()) {
-            	
-            	sql = "SELECT MAX(SUBSTR(SUBSTRING_INDEX("+ sig.getIdColName() +", \"/\", 3), "+ basePos +")) FROM "+sig.getTableName();
+            	sql = "SELECT MAX(SUBSTRING("+sig.getIdColName()+", "+basePos+", 3)) FROM "+sig.getTableName();
+            	//sql = "SELECT MAX(SUBSTR(SUBSTRING_INDEX("+ sig.getIdColName() +", \"/\", 3), "+ basePos +")) FROM "+sig.getTableName();
             } else {
             	sql = "SELECT max(SUBSTR("+sig.getIdColName()+", "+ basePos + ")) FROM "+sig.getTableName();
             }
