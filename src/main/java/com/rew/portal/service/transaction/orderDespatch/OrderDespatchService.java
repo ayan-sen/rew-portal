@@ -106,10 +106,14 @@ public class OrderDespatchService {
 		List<Map<String, Object>> enrichedMaterialsList = new ArrayList<>();
 		materials.forEach(material -> {
 			Map<String, Object> materialNew = new HashMap<>();
-			materialNew.putAll(material);
-			
 			String matType = (String) material.getOrDefault("type", "");
 			String matCode = (String) material.getOrDefault("code", "");
+			materialNew.put("unitId", material.getOrDefault("unitid", ""));
+			materialNew.put("unitName", material.getOrDefault("unitname", ""));
+			materialNew.put("name", material.getOrDefault("name", ""));
+			materialNew.put("unitName", material.getOrDefault("unitname", ""));
+			materialNew.put("code", matCode);
+			materialNew.put("type", matType);
 			Double availableQuantity = inventoryStatus.getOrDefault(material.getOrDefault("code", ""), 0.0);
 			materialNew.put("availableQuantity", availableQuantity);
 			

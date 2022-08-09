@@ -55,7 +55,7 @@ public class ExpenseRecord implements Serializable {
 	@Transient
 	private String expenseDateString;
 	
-	@Column(name="description", length=20, nullable=false)
+	@Column(name="description", length=200, nullable=false)
 	private String description;
 	
 	@Column(name="sgstAmount", length=20, nullable=false)
