@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rew.portal.model.transaction.orderProcessing.OrderProcessing;
+import com.rew.portal.model.transaction.orderProcessing.OrderProcessingDetails;
 import com.rew.portal.service.transaction.orderProcessing.OrderProcessingService;
 
 @Slf4j
@@ -103,7 +104,7 @@ public class OrderProcessingController {
 	}
 	
 	@GetMapping("/transaction/processes/date")
-	public ResponseEntity<Map<Object, List<Object>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate) {
+	public ResponseEntity<Map<Object, List<OrderProcessingDetails>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate) {
 		LocalDate date = LocalDate.parse(logDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		return ResponseEntity.ok(orderProcessingService.findByProcessDate(date));
 	}

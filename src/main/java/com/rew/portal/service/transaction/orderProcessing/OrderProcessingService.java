@@ -144,7 +144,7 @@ public class OrderProcessingService {
 		return enrichedMaterialsList;
 	}
 	
-	public Map<Object, List<Object>> findByProcessDate(LocalDate processDate) {
+	public Map<Object, List<OrderProcessingDetails>> findByProcessDate(LocalDate processDate) {
 		List<OrderProcessing> works = orderProcessingRepository.findByProcessDateOrderByProjectIdAsc(processDate);
 		return works.stream().collect(Collectors.groupingBy(w -> w.getProjectId(), 
 				Collectors.mapping(w -> w.getDetails(), 
