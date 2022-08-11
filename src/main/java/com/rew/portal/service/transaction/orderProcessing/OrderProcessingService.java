@@ -152,7 +152,11 @@ public class OrderProcessingService {
 	}
 	
 	public Map<String, Double> getMaterialStatusByProjectIdAndSiteId(String projectId, String siteId) {
-		List<InventoryRecord> records = inventoryRecordRepository.findByProjectId(projectId);
+		List<InventoryRecord> records = inventoryRecordRepository.findByProjectId(projectId).stream().filter(r -> !r.getItemType().equalsIgnoreCase("R")).collect(Collectors.toList());
+		
+		List<InventoryRecord> rawMaterials = inventoryRecordRepository.findByItemType("R");
+		
+		records.addAll(rawMaterials);
 
 		Map<String, Double> productMap = records
 				.stream()

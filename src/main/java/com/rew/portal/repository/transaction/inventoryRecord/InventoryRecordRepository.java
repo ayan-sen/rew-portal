@@ -29,4 +29,6 @@ public interface InventoryRecordRepository extends JpaRepository<InventoryRecord
 	public List<InventoryRecord> findByProjectIdAndItemTypeOrderByReferenceDateAsc(String projectId, String itemType);
 	
 	public List<InventoryRecord> findByProjectIdOrderByReferenceDateAsc(String projectId);
+	
+	public List<InventoryRecord> findByItemType(String itemType);
 }

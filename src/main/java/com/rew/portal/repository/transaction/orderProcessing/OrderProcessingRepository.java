@@ -22,7 +22,7 @@ public interface OrderProcessingRepository extends JpaRepository<OrderProcessing
 				+ "UNION "
 				+ "SELECT DISTINCT i.materialCode FROM inventory_record i WHERE projectId=?1 "
 				+ "UNION "
-				+ "SELECT DISTINCT r.code FROM raw_material r WHERE r.type='S' " 
+				+ "SELECT DISTINCT r.code FROM raw_material r WHERE r.type in ('R','S') " 
 				+ ") AND r.unitId = u.unitId", nativeQuery=true)
 	public List<Map<String, Object>> getMaterialListByProject(String projectId);
 	
