@@ -14,13 +14,11 @@ import org.springframework.stereotype.Service;
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
-import com.rew.portal.model.transaction.orderPlacement.OrderPlacement;
 import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
 import com.rew.portal.model.transaction.record.TransactionRecord;
 import com.rew.portal.repository.transaction.inventoryRecord.InventoryRecordRepository;
 import com.rew.portal.repository.transaction.orderDelivery.OrderDeliveryRepository;
 import com.rew.portal.repository.transaction.record.TransactionRecordRepository;
-import com.rew.portal.service.transaction.orderPlacement.OrderPlacementService;
 
 @Service
 public class OrderDeliveryService {
@@ -34,8 +32,8 @@ public class OrderDeliveryService {
 	@Resource
 	private TransactionRecordRepository transactionRecordRepository;
 	
-	@Resource
-	private OrderPlacementService orderPlacementService;
+//	@Resource
+//	private OrderPlacementService orderPlacementService;
 	
 	@Transactional
 	public OrderDelivery save(OrderDelivery orderDelivery) {
@@ -54,17 +52,17 @@ public class OrderDeliveryService {
 		TransactionRecord record = TransactionRecord.createFromOrderDelivery(delivery);
 		transactionRecordRepository.save(record);
 		
-		OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
-		List<OrderPlacementDetails> opDetails = op.getDetails();
+//		OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
+//		List<OrderPlacementDetails> opDetails = op.getDetails();
 		
 		// update order placement details quantity
-		details.forEach(dtl -> {
-			OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
-			Double alreadyOrderedQuantity  = ((opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) + dtl.getQuantity()) 
-													- (dtl.getOldQuantity() != null ? dtl.getOldQuantity() : 0.0) ;
-			opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
-		});
-		orderPlacementService.save(op);
+//		details.forEach(dtl -> {
+//			OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
+//			Double alreadyOrderedQuantity  = ((opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) + dtl.getQuantity()) 
+//													- (dtl.getOldQuantity() != null ? dtl.getOldQuantity() : 0.0) ;
+//			opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
+//		});
+//		orderPlacementService.save(op);
 		
 		return delivery;
 	}
@@ -98,18 +96,18 @@ public class OrderDeliveryService {
 			TransactionRecord record = TransactionRecord.createFromOrderDelivery(orderDelivery);
 			transactionRecordRepository.save(record);
 			
-			List<OrderDeliveryDetails> details = orderDelivery.getDetails();
-			OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
-			List<OrderPlacementDetails> opDetails = op.getDetails();
-			// update order placement details quantity
-			details.forEach(dtl -> {
-				System.out.println(dtl.getRmId());
-				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
-				System.out.println("DONE");
-				Double alreadyOrderedQuantity  = (opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) - dtl.getQuantity(); 
-				opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
-			});
-			orderPlacementService.save(op);
+//			List<OrderDeliveryDetails> details = orderDelivery.getDetails();
+//			OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
+//			List<OrderPlacementDetails> opDetails = op.getDetails();
+//			// update order placement details quantity
+//			details.forEach(dtl -> {
+//				System.out.println(dtl.getRmId());
+//				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),dtl.getRmId())).findFirst().get();
+//				System.out.println("DONE");
+//				Double alreadyOrderedQuantity  = (opDtl.getAlreadyOrderedQuantity() != null ? opDtl.getAlreadyOrderedQuantity() : 0.0) - dtl.getQuantity(); 
+//				opDtl.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
+//			});
+//			orderPlacementService.save(op);
 			
 		} else {
 			throw new ObjectNotFoundException("Order not found with order id ", orderDeliveryId);
@@ -122,7 +120,7 @@ public class OrderDeliveryService {
 		if(Objects.nonNull(orderDelivery)) {
 			Optional<OrderDeliveryDetails> opodtls = orderDelivery.getDetails().stream().filter(dtl -> dtl.getDetailId() == detailId).findFirst();
 			if(opodtls.isPresent()) {
-				OrderDeliveryDetails odtls = opodtls.get();
+//				OrderDeliveryDetails odtls = opodtls.get();
 				
 				orderDelivery.removeDetail(detailId);
 				orderDeliveryRepository.save(orderDelivery);
@@ -132,18 +130,18 @@ public class OrderDeliveryService {
 				transactionRecordRepository.save(record);
 				
 				
-				OrderPlacement oph = orderDelivery.getOrderPlacement();
-				List<OrderPlacementDetails> opDetails = oph.getDetails();
-				
-				
-				//update order placement table order quantity
-				Optional<OrderPlacementDetails> opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),odtls.getRmId())).findFirst();
-				if(opDtl.isPresent()) {
-					OrderPlacementDetails op = opDtl.get();
-					Double alreadyOrderedQuantity  =  op.getAlreadyOrderedQuantity() - odtls.getQuantity();
-					op.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
-				}
-				orderPlacementService.save(oph);
+//				OrderPlacement oph = orderDelivery.getOrderPlacement();
+//				List<OrderPlacementDetails> opDetails = oph.getDetails();
+//				
+//				
+//				//update order placement table order quantity
+//				Optional<OrderPlacementDetails> opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(),odtls.getRmId())).findFirst();
+//				if(opDtl.isPresent()) {
+//					OrderPlacementDetails op = opDtl.get();
+//					Double alreadyOrderedQuantity  =  op.getAlreadyOrderedQuantity() - odtls.getQuantity();
+//					op.setAlreadyOrderedQuantity(alreadyOrderedQuantity);
+//				}
+//				orderPlacementService.save(oph);
 			}
 		} else {
 			throw new ObjectNotFoundException("Delivery item not found with id ", orderDeliveryId);
