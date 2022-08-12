@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 import com.rew.portal.model.transaction.orderDelivery.OrderDeliveryDetails;
-import com.rew.portal.model.transaction.orderPlacement.OrderPlacementDetails;
 import com.rew.portal.model.transaction.record.TransactionRecord;
 import com.rew.portal.repository.transaction.inventoryRecord.InventoryRecordRepository;
 import com.rew.portal.repository.transaction.orderDelivery.OrderDeliveryRepository;
@@ -69,15 +68,15 @@ public class OrderDeliveryService {
 	
 	public OrderDelivery findById(String clientId) {
 		OrderDelivery opt = orderDeliveryRepository.findById(clientId).orElse(null);
-		if(opt != null) {
-			List<OrderDeliveryDetails> details = opt.getDetails();
-			List<OrderPlacementDetails> opDetails = opt.getOrderPlacement().getDetails();
-			details.forEach(dtl ->  {
-				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(), dtl.getRmId())).findFirst().orElse(null);
-				dtl.setRemainingQuantity((opDtl.getQuantity() - opDtl.getAlreadyOrderedQuantity()) + dtl.getQuantity());
-				dtl.setOldQuantity(dtl.getQuantity());
-			});
-		}
+//		if(opt != null) {
+//			List<OrderDeliveryDetails> details = opt.getDetails();
+//			List<OrderPlacementDetails> opDetails = opt.getOrderPlacement().getDetails();
+//			details.forEach(dtl ->  {
+//				OrderPlacementDetails opDtl = opDetails.stream().filter(d -> StringUtils.equals(d.getRmId(), dtl.getRmId())).findFirst().orElse(null);
+//				dtl.setRemainingQuantity((opDtl.getQuantity() - opDtl.getAlreadyOrderedQuantity()) + dtl.getQuantity());
+//				dtl.setOldQuantity(dtl.getQuantity());
+//			});
+//		}
 		return opt;
 	}
 	

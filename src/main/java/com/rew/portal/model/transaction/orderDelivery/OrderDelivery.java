@@ -67,6 +67,7 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Transient
 	private String billDateString;
 	
+	@JsonIgnore
 	@Column(name="orderId", length=20)
 	private String orderId;
 	
