@@ -11,14 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rew.portal.model.transaction.invoice.Invoice;
+import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 
 @Getter
 @NoArgsConstructor
@@ -66,6 +67,9 @@ public class TransactionRecord implements Serializable {
 	
 	@Column(name="totalAmount", length=20, nullable=false)
 	private Double totalAmount;
+	
+	@Column(name="isPaymentDone", nullable=true)
+	private boolean isPaymentDone;
 
 	public static TransactionRecord createFromOrderDelivery(OrderDelivery delivery) {
 		
@@ -78,6 +82,22 @@ public class TransactionRecord implements Serializable {
 								.cgstAmount(delivery.getCgstAmount())
 								.sgstAmount(delivery.getSgstAmount())
 								.totalAmount(delivery.getTotalAmount())
+								.isPaymentDone(true)
+								.build();
+	}
+	
+public static TransactionRecord createFromInvoice(Invoice invoice) {
+		
+		return TransactionRecord.builder()
+								.referenceId(invoice.getInvoiceId())
+								.referenceDate(invoice.getInvoiceDate())
+								.referenceType("OS")
+								.buySellFlag("S")
+								.amount(invoice.getAmount())
+								.cgstAmount(invoice.getCgstAmount())
+								.sgstAmount(invoice.getSgstAmount())
+								.totalAmount(invoice.getTotalAmount())
+								.isPaymentDone(invoice.isPaymentDone())
 								.build();
 	}
 }

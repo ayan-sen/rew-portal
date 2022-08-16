@@ -92,8 +92,8 @@ public class OrderDeliveryService {
 			orderDeliveryRepository.save(orderDelivery);
 			inventoryRecordRepository.deleteByReferenceId(orderDelivery.getDeliveryId());
 			transactionRecordRepository.deleteByReferenceId(orderDelivery.getDeliveryId());
-			TransactionRecord record = TransactionRecord.createFromOrderDelivery(orderDelivery);
-			transactionRecordRepository.save(record);
+			//TransactionRecord record = TransactionRecord.createFromOrderDelivery(orderDelivery);
+			//transactionRecordRepository.save(record);
 			
 //			List<OrderDeliveryDetails> details = orderDelivery.getDetails();
 //			OrderPlacement op = orderPlacementService.findById(orderDelivery.getOrderId());
