@@ -24,6 +24,8 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.common.PkGenerationSignature;
@@ -44,6 +46,7 @@ import lombok.ToString;
 @Builder
 @Entity(name="invoice_h")
 @Table(name="invoice_h")
+@JsonIgnoreProperties({"paymentDone"})
 public class Invoice implements PkGenerationSignature, Serializable {
 	
 	@Id
@@ -56,11 +59,12 @@ public class Invoice implements PkGenerationSignature, Serializable {
 	private LocalDate invoiceDate;
 	
 	@Transient
-	private String invoideDateString;
+	private String invoiceDateString;
 	
 	@Column(name="projectId", length=20, nullable = false)
 	private String projectId;
 	
+	@JsonProperty("isPaymentDone")
 	@Column(name="paymentDone", length=6, nullable = false)
 	private boolean isPaymentDone;
 	
@@ -81,6 +85,10 @@ public class Invoice implements PkGenerationSignature, Serializable {
 	
 	@Column(name="notes", length=100)
 	private String notes;
+	
+	@Column(name="vehicleNo", length=100)
+	private String vehicleNo;
+	
 	
 	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -105,10 +113,10 @@ public class Invoice implements PkGenerationSignature, Serializable {
 		return null;
 	}
 	
-	public void setInvoiceDateString(String invoideDateString) {
-		this.invoideDateString = invoideDateString;
-		if(StringUtils.isNotEmpty(invoideDateString)) {
-			this.invoiceDate = LocalDate.parse(this.invoideDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	public void setInvoiceDateString(String invoiceDateString) {
+		this.invoiceDateString = invoiceDateString;
+		if(StringUtils.isNotEmpty(invoiceDateString)) {
+			this.invoiceDate = LocalDate.parse(this.invoiceDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		}
 	}
 	

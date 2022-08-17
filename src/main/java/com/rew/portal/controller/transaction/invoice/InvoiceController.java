@@ -95,8 +95,8 @@ public class InvoiceController {
 	}
 
 	@GetMapping("/transaction/invoice/products")
-	public ResponseEntity<List<Map<String, Object>>> findMaterialsByProject(@RequestParam("projectId") String projectId, @RequestParam("siteId") String siteId) {
-		return new ResponseEntity<List<Map<String, Object>>>(invoiceService.getMaterialListByProject(projectId, siteId), HttpStatus.OK);
+	public ResponseEntity<List<Map<String, Object>>> findMaterialsByProject(@RequestParam("projectId") String projectId) {
+		return new ResponseEntity<List<Map<String, Object>>>(invoiceService.getMaterialListByProject(projectId, "SINGUR"), HttpStatus.OK);
 	}
 	
 }

@@ -45,10 +45,10 @@ public class InvoiceDetails implements Serializable{
 	private Integer invoiceDetailsId;
 	
 	@Column(name="rmId", length=20, nullable=false)
-	private String rmId;
+	private String materialId;
 	
 	@Column(name="unitId", length=20, nullable=false)
-	private String unitId;
+	private String materialUnit;
 	
 	@Column(name="quantity", length=20, nullable=false)
 	private Double quantity;
@@ -77,14 +77,14 @@ public class InvoiceDetails implements Serializable{
 	@JoinColumn(name="unitId", referencedColumnName="unitId", insertable=false,updatable=false)
 	private Unit unit;
 	
-	public String getRmName() {
+	public String getMaterialName() {
 		if(this.rawMaterial != null) {
 			return this.rawMaterial.getName();
 		}
 		return null;
 	}
 	
-	public String getUnitName() {
+	public String getMaterialUnitName() {
 		if(this.unit != null) {
 			return this.unit.getUnitName();
 		}

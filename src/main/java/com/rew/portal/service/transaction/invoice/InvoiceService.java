@@ -18,10 +18,12 @@ import org.springframework.stereotype.Service;
 import com.rew.portal.model.transaction.inventory.InventoryRecord;
 import com.rew.portal.model.transaction.invoice.Invoice;
 import com.rew.portal.model.transaction.invoice.InvoiceDetails;
+import com.rew.portal.model.transaction.project.Project;
 import com.rew.portal.model.transaction.record.TransactionRecord;
 import com.rew.portal.repository.transaction.inventoryRecord.InventoryRecordRepository;
 import com.rew.portal.repository.transaction.invoice.InvoiceRepository;
 import com.rew.portal.repository.transaction.orderProcessing.OrderProcessingRepository;
+import com.rew.portal.repository.transaction.project.ProjectRepository;
 import com.rew.portal.repository.transaction.record.TransactionRecordRepository;
 import com.rew.portal.service.transaction.inventory.InventoryService;
 
@@ -39,6 +41,9 @@ public class InvoiceService {
 	
 	@Autowired
 	private InventoryRecordRepository inventoryRecordRepository;
+	
+	@Autowired
+	private ProjectRepository projectRepository;
 
 	@Transactional
 	public Invoice save(Invoice invoice) {
@@ -95,20 +100,17 @@ public class InvoiceService {
 	}
 	
 	public List<Map<String, Object>> getMaterialListByProject(String projectId, String siteId) {
-		List<Map<String, Object>> materials = orderProcessingRepository.getProductsByProject(projectId);
+		Project project = projectRepository.findLatest(projectId);
 		Map<String, Double> inventoryStatus = this.getProductStatus(projectId, siteId);
 		List<Map<String, Object>> enrichedMaterialsList = new ArrayList<>();
-		materials.forEach(material -> {
+		project.getDetails().forEach(material -> {
 			Map<String, Object> materialNew = new HashMap<>();
-			String matType = (String) material.getOrDefault("type", "");
-			String matCode = (String) material.getOrDefault("code", "");
-			materialNew.put("unitId", material.getOrDefault("unitid", ""));
-			materialNew.put("unitName", material.getOrDefault("unitname", ""));
-			materialNew.put("name", material.getOrDefault("name", ""));
-			materialNew.put("unitName", material.getOrDefault("unitname", ""));
-			materialNew.put("code", matCode);
-			materialNew.put("type", matType);
-			Double availableQuantity = inventoryStatus.getOrDefault(material.getOrDefault("code", ""), 0.0);
+			materialNew.put("unitId", material.getUnitId());
+			materialNew.put("unitName", material.getUnitName());
+			materialNew.put("name", material.getRmName());
+			materialNew.put("code", material.getRmId());
+			materialNew.put("rate", material.getRate());
+			Double availableQuantity = inventoryStatus.getOrDefault(material.getRmId(), 0.0);
 			materialNew.put("availableQuantity", availableQuantity);
 			
 			enrichedMaterialsList.add(materialNew);

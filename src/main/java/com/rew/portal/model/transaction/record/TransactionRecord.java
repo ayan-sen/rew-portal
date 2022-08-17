@@ -82,6 +82,7 @@ public class TransactionRecord implements Serializable {
 								.cgstAmount(delivery.getCgstAmount())
 								.sgstAmount(delivery.getSgstAmount())
 								.totalAmount(delivery.getTotalAmount())
+								.freightCharges(delivery.getFreightCharges())
 								.isPaymentDone(true)
 								.build();
 	}
@@ -97,6 +98,7 @@ public static TransactionRecord createFromInvoice(Invoice invoice) {
 								.cgstAmount(invoice.getCgstAmount())
 								.sgstAmount(invoice.getSgstAmount())
 								.totalAmount(invoice.getTotalAmount())
+								.freightCharges(invoice.getFreightCharges())
 								.isPaymentDone(invoice.isPaymentDone())
 								.build();
 	}
