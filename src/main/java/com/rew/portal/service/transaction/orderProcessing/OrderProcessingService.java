@@ -145,7 +145,13 @@ public class OrderProcessingService {
 	}
 	
 	public Map<Object, Map<Object, List<Object>>> findByProcessDate(LocalDate processDate, LocalDate toDate) {
-		List<OrderProcessing> works = orderProcessingRepository.findByProcessDateBetweenOrderByProjectIdAsc(processDate, toDate);
+		List<OrderProcessing> works = new ArrayList<>();
+		if(Objects.isNull(toDate)) {
+			works = orderProcessingRepository.findByProcessDateOrderByProjectIdAsc(processDate);
+		} else {
+			works = orderProcessingRepository.findByProcessDateBetweenOrderByProjectIdAsc(processDate, toDate);
+		}
+		
 		return works.stream().collect(Collectors.groupingBy(w -> w.getProjectId(), Collectors.groupingBy(w -> w.getProcessDate(), 
 				Collectors.mapping(w -> w.getDetails(), 
 						Collectors.flatMapping(w -> w.stream(), Collectors.toList())))));
