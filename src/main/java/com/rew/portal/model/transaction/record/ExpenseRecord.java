@@ -68,7 +68,7 @@ public class ExpenseRecord implements Serializable {
 	private String categoryName;
 	
 	
-	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="categoryId",insertable=false,updatable=false)

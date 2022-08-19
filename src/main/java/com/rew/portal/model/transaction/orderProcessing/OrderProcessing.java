@@ -13,14 +13,23 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rew.portal.model.admin.companyProfile.WorkUnitDetails;
+import com.rew.portal.model.transaction.project.Project;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,6 +76,11 @@ public class OrderProcessing implements Serializable {
 	@JsonProperty("isActive")
 	@Column(name = "isActive", length = 1, nullable = false)
 	private Boolean isActive = true;
+	
+
+	
+	
+
 
 	@OneToMany(mappedBy = "orderProcessing", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<OrderProcessingDetails> details = new ArrayList<>();

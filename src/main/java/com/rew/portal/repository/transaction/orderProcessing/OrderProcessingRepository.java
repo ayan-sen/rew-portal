@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.rew.portal.model.transaction.orderProcessing.OrderProcessing;
+import com.rew.portal.model.transaction.record.ExpenseRecord;
 
 @Repository
 public interface OrderProcessingRepository extends JpaRepository<OrderProcessing, Integer> {
@@ -28,6 +29,8 @@ public interface OrderProcessingRepository extends JpaRepository<OrderProcessing
 	
 	
 	public List<OrderProcessing> findByProcessDateOrderByProjectIdAsc(LocalDate processDate);
+	
+	public List<OrderProcessing> findByProcessDateBetweenOrderByProjectIdAsc(LocalDate expenseDate, LocalDate toDate);
 	
 	@Query(value="SELECT r.code, r.name, r.unitId, u.unitName, r.type  FROM raw_material r, unit u "
 			+ "WHERE CODE IN ("

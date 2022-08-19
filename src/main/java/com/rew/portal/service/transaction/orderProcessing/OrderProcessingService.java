@@ -144,11 +144,11 @@ public class OrderProcessingService {
 		return enrichedMaterialsList;
 	}
 	
-	public Map<Object, List<OrderProcessingDetails>> findByProcessDate(LocalDate processDate) {
-		List<OrderProcessing> works = orderProcessingRepository.findByProcessDateOrderByProjectIdAsc(processDate);
-		return works.stream().collect(Collectors.groupingBy(w -> w.getProjectId(), 
+	public Map<Object, Map<Object, List<Object>>> findByProcessDate(LocalDate processDate, LocalDate toDate) {
+		List<OrderProcessing> works = orderProcessingRepository.findByProcessDateBetweenOrderByProjectIdAsc(processDate, toDate);
+		return works.stream().collect(Collectors.groupingBy(w -> w.getProjectId(), Collectors.groupingBy(w -> w.getProcessDate(), 
 				Collectors.mapping(w -> w.getDetails(), 
-						Collectors.flatMapping(w -> w.stream(), Collectors.toList()))));
+						Collectors.flatMapping(w -> w.stream(), Collectors.toList())))));
 	}
 	
 	public Map<String, Double> getMaterialStatusByProjectIdAndSiteId(String projectId, String siteId) {

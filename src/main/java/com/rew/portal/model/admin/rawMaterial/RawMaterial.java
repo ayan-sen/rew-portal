@@ -23,6 +23,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rew.portal.model.admin.unit.Unit;
 import com.rew.portal.model.common.PkGenerationSignature;
 @EqualsAndHashCode
@@ -63,6 +64,7 @@ public class RawMaterial implements PkGenerationSignature, Serializable {
 	@Transient
 	private String unitName;
 	
+	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="unitId",insertable=false,updatable=false)
@@ -75,16 +77,19 @@ public class RawMaterial implements PkGenerationSignature, Serializable {
 		return this.unitName;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getPrefix() {
 		return "R";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTableName() {
 		return "raw_material";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getIdColName() {
 		return "code";

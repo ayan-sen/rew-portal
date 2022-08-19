@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -104,8 +105,13 @@ public class OrderProcessingController {
 	}
 	
 	@GetMapping("/transaction/processes/date")
-	public ResponseEntity<Map<Object, List<OrderProcessingDetails>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate) {
+	public ResponseEntity<Map<Object, Map<Object, List<Object>>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate,
+			@RequestParam(name = "toDate", required = false) String toDate) {
 		LocalDate date = LocalDate.parse(logDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		return ResponseEntity.ok(orderProcessingService.findByProcessDate(date));
+		LocalDate endDate = null;
+		if(StringUtils.isNotEmpty(toDate)) {
+			endDate = LocalDate.parse(toDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+		return ResponseEntity.ok(orderProcessingService.findByProcessDate(date, endDate));
 	}
 }

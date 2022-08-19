@@ -17,6 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -39,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.admin.client.Client;
 import com.rew.portal.model.common.PkGenerationSignature;
+import com.rew.portal.model.transaction.orderProcessing.OrderProcessing;
 
 @EqualsAndHashCode
 @Getter
@@ -152,6 +155,7 @@ public class Project implements PkGenerationSignature, Serializable {
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="consigneeId", referencedColumnName="clientId", insertable=false,updatable=false)
 	private Client consignee;
+	
 
 	@JsonIgnore
 	@Override
