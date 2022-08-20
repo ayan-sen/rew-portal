@@ -83,7 +83,7 @@ public class TransactionRecord implements Serializable {
 								.sgstAmount(delivery.getSgstAmount())
 								.totalAmount(delivery.getTotalAmount())
 								.freightCharges(delivery.getFreightCharges())
-								.isPaymentDone(true)
+								.isPaymentDone(delivery.getIsPaymentDone())
 								.build();
 	}
 	
