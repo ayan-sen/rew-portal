@@ -64,10 +64,6 @@ public class Invoice implements PkGenerationSignature, Serializable {
 	@Column(name="projectId", length=20, nullable = false)
 	private String projectId;
 	
-	@JsonProperty("isPaymentDone")
-	@Column(name="paymentDone", length=6, nullable = false)
-	private boolean isPaymentDone;
-	
 	@Column(name="amount", length=20, nullable=false)
 	private Double amount;
 	
@@ -89,18 +85,14 @@ public class Invoice implements PkGenerationSignature, Serializable {
 	@Column(name="vehicleNo", length=100)
 	private String vehicleNo;
 	
+	@Column(name="clientId", length=20, nullable=true)
+	private String clientId;
 	
 	@JsonIgnore
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="clientId", referencedColumnName="clientId", insertable=false,updatable=false)
 	private Client client;
-	
-	@JsonIgnore
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="clientDetailsId", referencedColumnName="detailId", insertable=false,updatable=false, nullable=true)
-	private ClientDetails clientDetail;
 	
 	@OneToMany(mappedBy="invoice", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<InvoiceDetails> details = new ArrayList<>();
@@ -145,5 +137,13 @@ public class Invoice implements PkGenerationSignature, Serializable {
 
 	public void removeDetail(int invoiceDetailId) {
 		details.removeIf(d -> d.getInvoiceDetailsId() == invoiceDetailId);
+	}
+	
+	@JsonIgnore
+	public String getClientName() {
+		if (this.client != null) {
+			return this.client.getClientName();
+		}
+		return null;
 	}
 }

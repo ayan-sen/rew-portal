@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.transaction.invoice.Invoice;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
 
@@ -68,8 +69,18 @@ public class TransactionRecord implements Serializable {
 	@Column(name="totalAmount", length=20, nullable=false)
 	private Double totalAmount;
 	
-	@Column(name="isPaymentDone", nullable=true)
-	private boolean isPaymentDone;
+	@Column(name="clientId", length=20, nullable=true)
+	private String clientId;
+	
+	@Column(name="paidAmount", length=20, nullable=true)
+	private Double paidAmount;
+	
+	@Column(name="paymentReferenceId", length=20, nullable=true)
+	private String paymentReferenceId;
+	
+	@JsonProperty("isPaymentDone")
+	@Column(name="isPaymentDone", length=1, nullable=false)
+	private Boolean isPaymentDone;
 
 	public static TransactionRecord createFromOrderDelivery(OrderDelivery delivery) {
 		
@@ -83,7 +94,8 @@ public class TransactionRecord implements Serializable {
 								.sgstAmount(delivery.getSgstAmount())
 								.totalAmount(delivery.getTotalAmount())
 								.freightCharges(delivery.getFreightCharges())
-								.isPaymentDone(delivery.getIsPaymentDone())
+								.clientId(delivery.getSupplierId())
+								.isPaymentDone(false)
 								.build();
 	}
 	
@@ -99,7 +111,8 @@ public static TransactionRecord createFromInvoice(Invoice invoice) {
 								.sgstAmount(invoice.getSgstAmount())
 								.totalAmount(invoice.getTotalAmount())
 								.freightCharges(invoice.getFreightCharges())
-								.isPaymentDone(invoice.isPaymentDone())
+								.clientId(invoice.getClientId())
+								.isPaymentDone(false)
 								.build();
 	}
 }

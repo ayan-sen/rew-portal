@@ -115,9 +115,6 @@ public class OrderDelivery implements PkGenerationSignature, Serializable {
 	@Column(name="isActive", length=1, nullable=false)
 	private Boolean isActive = true;
 	
-	@JsonProperty("isPaymentDone")
-	@Column(name="isPaymentDone", length=1, nullable=true)
-	private Boolean isPaymentDone;
 
 	@OneToMany(mappedBy="orderDelivery", cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<OrderDeliveryDetails> details = new ArrayList<>();
