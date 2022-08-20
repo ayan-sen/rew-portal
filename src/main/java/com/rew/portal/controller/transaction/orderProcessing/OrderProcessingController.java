@@ -105,7 +105,7 @@ public class OrderProcessingController {
 	}
 	
 	@GetMapping("/transaction/processes/date")
-	public ResponseEntity<Map<Object, Map<Object, List<Object>>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate,
+	public ResponseEntity<Map<String, Map<LocalDate, List<OrderProcessingDetails>>>> findbyDate(@RequestParam(name = "logDate", required = true) String logDate,
 			@RequestParam(name = "toDate", required = false) String toDate) {
 		LocalDate date = LocalDate.parse(logDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		LocalDate endDate = null;
