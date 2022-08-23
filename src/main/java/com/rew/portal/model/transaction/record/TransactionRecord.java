@@ -2,6 +2,7 @@ package com.rew.portal.model.transaction.record;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.transaction.invoice.Invoice;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
+import com.rew.portal.model.transaction.payment.PaymentDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -99,20 +101,43 @@ public class TransactionRecord implements Serializable {
 								.build();
 	}
 	
-public static TransactionRecord createFromInvoice(Invoice invoice) {
+	public static TransactionRecord createFromInvoice(Invoice invoice) {
+			
+			return TransactionRecord.builder()
+									.referenceId(invoice.getInvoiceId())
+									.referenceDate(invoice.getInvoiceDate())
+									.referenceType("OS")
+									.buySellFlag("S")
+									.amount(invoice.getAmount())
+									.cgstAmount(invoice.getCgstAmount())
+									.sgstAmount(invoice.getSgstAmount())
+									.totalAmount(invoice.getTotalAmount())
+									.freightCharges(invoice.getFreightCharges())
+									.clientId(invoice.getClientId())
+									.isPaymentDone(false)
+									.build();
+		}
 		
-		return TransactionRecord.builder()
-								.referenceId(invoice.getInvoiceId())
-								.referenceDate(invoice.getInvoiceDate())
-								.referenceType("OS")
-								.buySellFlag("S")
-								.amount(invoice.getAmount())
-								.cgstAmount(invoice.getCgstAmount())
-								.sgstAmount(invoice.getSgstAmount())
-								.totalAmount(invoice.getTotalAmount())
-								.freightCharges(invoice.getFreightCharges())
-								.clientId(invoice.getClientId())
-								.isPaymentDone(false)
-								.build();
+	public TransactionRecord addPaymentDetails(PaymentDetails paymentDetails) {
+		this.paidAmount = Optional.ofNullable(this.paidAmount).orElse(0.0) + paymentDetails.getAmount();
+		this.paymentReferenceId = paymentDetails.getPayment().getPaymentId();
+		if(Double.compare(this.paidAmount, this.totalAmount) == 0) {
+			this.isPaymentDone = true;
+		} else {
+			this.isPaymentDone =false;
+		}
+		return this;
 	}
+	
+	public TransactionRecord removePaymentDetails(PaymentDetails paymentDetails) {
+		this.paidAmount = Optional.ofNullable(this.paidAmount).orElse(0.0) - paymentDetails.getAmount();
+		this.paymentReferenceId = paymentDetails.getPayment().getPaymentId();
+		if(Double.compare(this.paidAmount, this.totalAmount) == 0) {
+			this.isPaymentDone = true;
+		} else {
+			this.isPaymentDone = false;
+		}
+		return this;
+	}
+
 }

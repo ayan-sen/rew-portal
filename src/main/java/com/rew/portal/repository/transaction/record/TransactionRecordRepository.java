@@ -10,8 +10,9 @@ import com.rew.portal.model.transaction.record.TransactionRecord;
 @Repository
 public interface TransactionRecordRepository extends JpaRepository<TransactionRecord, String> {
 	
-	public List<TransactionRecord> findByReferenceId(String referenceId);
+	public TransactionRecord findByReferenceId(String referenceId);
 	
 	public void deleteByReferenceId(String referenceId);
 
+	public List<TransactionRecord> findByClientIdAndBuySellFlagAndIsPaymentDoneOrderByReferenceDateAsc(String clientId, String buySellFlag, boolean isPaymentDone);
 }
