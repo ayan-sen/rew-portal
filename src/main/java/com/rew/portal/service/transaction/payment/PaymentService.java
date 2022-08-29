@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -29,6 +30,7 @@ public class PaymentService {
 	
 	@Transactional
 	public Payment save(Payment payment) {
+		//payment.removeEmptyValues();
 		List<PaymentDetails> details = payment.getDetails();
 		List<TransactionRecord> records = new ArrayList<>();
 		details.forEach(d -> {
@@ -113,5 +115,9 @@ public class PaymentService {
 			return transactionRecordRepository.findByClientIdAndBuySellFlagAndIsPaymentDoneOrderByReferenceDateAsc(clientId, "S", false);
 		}
 		return transactionRecordRepository.findByClientIdAndBuySellFlagAndIsPaymentDoneOrderByReferenceDateAsc(clientId, "B", false);
+	}
+	
+	public List<Payment> findPaymentsByClient(String clientId) {
+		return paymentRepository.findByClientId(clientId);
 	}
 }

@@ -2,6 +2,7 @@ package com.rew.portal.model.transaction.payment;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -50,12 +52,14 @@ public class Payment implements PkGenerationSignature, Serializable  {
 	@Column(name="paymentId", length=20)
 	private String paymentId;
 	
+	@JsonIgnore
 	@Column(name="paymentDate", nullable=false)
 	private LocalDate paymentDate;
 	
 	@Transient
 	private String paymentDateString;
 	
+	@JsonIgnore
 	@Column(name="paymentRefNo", length=20, nullable=true)
 	private String paymentRefNo;
 	
@@ -90,18 +94,46 @@ public class Payment implements PkGenerationSignature, Serializable  {
 		details.removeIf(d -> d.getPaymentDetailId() == detailId);
 	}
 	
+	public void removeEmptyValues() {
+		details.removeIf(detail -> !(detail.getAmount() > 0.0));
+	}
+	
+	@JsonIgnore
 	@Override
 	public String getPrefix() {
 		return "REW/P/";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTableName() {
 		return "payment_h";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getIdColName() {
 		return "paymentId";
 	}
+	
+	public String getPaymentDateString() {
+		if (this.paymentDate != null) {
+			return this.paymentDate.format(DateTimeFormatter
+					.ofPattern("yyyy-MM-dd"));
+		}
+		return null;
+		
+	}
+	
+	public void setPaymentDateString(String paymentDateString) {
+		this.paymentDateString = paymentDateString;
+		
+		if (StringUtils.isNotEmpty(paymentDateString)) {  
+			this.paymentDate = LocalDate.parse(
+					this.paymentDateString,
+					DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+	
+	
 }

@@ -86,9 +86,14 @@ public class PaymentController {
 				: new ResponseEntity<Payment>(payment, HttpStatus.OK);
 	}
 	
-	@GetMapping("/transaction/payment/client")
+	@GetMapping("/transaction/record/client")
 	public List<TransactionRecord> findByClient(@RequestParam("clientId") String clientId, @RequestParam("paymentType") String paymentType) {
 		return paymentService.findByClientIdAndBuySellFlag(clientId, paymentType);
+	}
+	
+	@GetMapping("/transaction/payment/client")
+	public List<Payment> findPaymentDetailsByClient(@RequestParam("clientId") String clientId) {
+		return paymentService.findPaymentsByClient(clientId);
 	}
 
 }
