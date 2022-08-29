@@ -26,6 +26,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rew.portal.model.admin.client.Client;
+import com.rew.portal.model.admin.client.ClientDetails;
 import com.rew.portal.model.admin.rawMaterial.RawMaterial;
 import com.rew.portal.model.admin.unit.Unit;
 
@@ -72,6 +74,12 @@ public class OrderProcessingDetails implements Serializable {
 	@Column(name="notes", length=100)
 	private String notes;
 	
+	@Column(name="galvaniserId", length=20, nullable=true)
+	private String galvaniserId;
+	
+	@Column(name="galvaniserDetailId", length=20, nullable=true)
+	private Integer galvaniserDetailId;
+	
 	@JsonIgnore
 	@Setter
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -90,6 +98,18 @@ public class OrderProcessingDetails implements Serializable {
 	@JoinColumn(name="materialUnit", referencedColumnName="unitId", insertable=false,updatable=false)
 	private Unit unit;
 	
+	@JsonIgnore
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="galvaniserId", referencedColumnName="clientId", insertable=false,updatable=false)
+	private Client galvaniser;
+	
+	@JsonIgnore
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="galvaniserDetailId", referencedColumnName="detailId", insertable=false,updatable=false, nullable=true)
+	private ClientDetails galvaniserDetail;
+	
 	public String getMaterialName() {
 		if(this.material != null) {
 			return this.material.getName();
@@ -100,6 +120,20 @@ public class OrderProcessingDetails implements Serializable {
 	public String getUnitName() {
 		if(this.unit != null) {
 			return this.unit.getUnitName();
+		}
+		return null;
+	}
+	
+	public String getGalvaniserName() {
+		if (this.galvaniser != null) {
+			return this.galvaniser.getClientName();
+		}
+		return null;
+	}
+
+	public String getGalvaniserIdentifier() {
+		if (this.galvaniserDetail != null) {
+			return this.galvaniserDetail.getIdentifier();
 		}
 		return null;
 	}
