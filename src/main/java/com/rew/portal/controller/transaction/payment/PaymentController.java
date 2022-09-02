@@ -1,5 +1,7 @@
 package com.rew.portal.controller.transaction.payment;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rew.portal.model.transaction.payment.Payment;
+import com.rew.portal.model.transaction.payment.PaymentType;
 import com.rew.portal.model.transaction.record.TransactionRecord;
 import com.rew.portal.service.transaction.payment.PaymentService;
 
@@ -94,6 +98,18 @@ public class PaymentController {
 	@GetMapping("/transaction/payment/client")
 	public List<Payment> findPaymentDetailsByClient(@RequestParam("clientId") String clientId) {
 		return paymentService.findPaymentsByClient(clientId);
+	}
+	
+	@GetMapping("/transaction/payment/report")
+	public Map<String, Object> findPayments(@RequestParam(name="fromDate", required = true) String fromDateString, 
+			@RequestParam(name = "toDate", required = false) String toDateString, @RequestParam("clientId") String clientId) {
+		
+		LocalDate fromDate = LocalDate.parse(fromDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		LocalDate toDate = null;
+		if(StringUtils.isNotEmpty(toDateString)) {
+			toDate = LocalDate.parse(toDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+		return paymentService.findPaymentDetails(fromDate, toDate, clientId);
 	}
 
 }

@@ -16,7 +16,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rew.portal.model.transaction.invoice.Invoice;
 import com.rew.portal.model.transaction.orderDelivery.OrderDelivery;
+import com.rew.portal.model.transaction.payment.Payment;
 import com.rew.portal.model.transaction.payment.PaymentDetails;
+import com.rew.portal.model.transaction.payment.PaymentType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,19 +58,19 @@ public class TransactionRecord implements Serializable {
 	@Column(name="buySellFlag", length=4, nullable=false)
 	private String buySellFlag;
 	
-	@Column(name="amount", length=20, nullable=false)
+	@Column(name="amount", length=20, nullable=true)
 	private Double amount;
 	
 	@Column(name="freightCharges", length=20)
 	private Double freightCharges;
 	
-	@Column(name="cgstAmount", length=20, nullable=false)
+	@Column(name="cgstAmount", length=20, nullable=true)
 	private Double cgstAmount;
 	
-	@Column(name="sgstAmount", length=20, nullable=false)
+	@Column(name="sgstAmount", length=20, nullable=true)
 	private Double sgstAmount;
 	
-	@Column(name="totalAmount", length=20, nullable=false)
+	@Column(name="totalAmount", length=20, nullable=true)
 	private Double totalAmount;
 	
 	@Column(name="clientId", length=20, nullable=true)
@@ -138,6 +140,25 @@ public class TransactionRecord implements Serializable {
 			this.isPaymentDone = false;
 		}
 		return this;
+	}
+	
+	public static TransactionRecord createForOtherPayment(Payment payment) {
+		String buySellInd = null;
+		if(payment.getPaymentType().equals(PaymentType.SEND)) {
+			buySellInd = "B";
+		} else {
+			buySellInd = "S";
+		}
+		
+		return TransactionRecord.builder()
+								.referenceId(payment.getPaymentId())
+								.referenceDate(payment.getPaymentDate())
+								.referenceType("PP")
+								.buySellFlag(buySellInd)
+								.clientId(payment.getClientId())
+								.paidAmount(payment.getOtherPayment())
+								.isPaymentDone(true)
+								.build();
 	}
 
 }

@@ -46,7 +46,6 @@ import lombok.ToString;
 @Builder
 @Entity(name="invoice_h")
 @Table(name="invoice_h")
-@JsonIgnoreProperties({"paymentDone"})
 public class Invoice implements PkGenerationSignature, Serializable {
 	
 	@Id
